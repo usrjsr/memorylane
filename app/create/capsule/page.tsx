@@ -1,4 +1,3 @@
-// app/create/capsule/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -10,25 +9,31 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { AiAssistant } from '@/components/AiAssistant';
 
 type MediaFile = {
   url: string;
   type: 'image' | 'video' | 'audio' | 'pdf';
   name: string;
   key?: string;
+  caption?: string;
 };
 
 export default function CreateCapsulePage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  
+  const [aiMemoryIdeas, setAiMemoryIdeas] = useState<string[]>([]);
+  const [isLoadingIdeas, setIsLoadingIdeas] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    unlockDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+    unlockDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
     recipients: [''],
     theme: 'Childhood',
     privacy: 'recipients-only' as 'private' | 'recipients-only' | 'public',
@@ -45,6 +50,7 @@ export default function CreateCapsulePage() {
           type: (f.serverData?.fileType ?? 'image') as MediaFile['type'],
           name: f.name,
           key: f.key,
+          caption: '',
         }));
 
         console.log('📦 [UPLOAD] Mapped files:', mappedFiles);
@@ -69,6 +75,80 @@ export default function CreateCapsulePage() {
 
     console.log('📁 [FILE_INPUT] Files selected:', files.length);
     await startUpload(Array.from(files));
+  };
+
+  
+  const parseAiIdeas = (rawText: string): string[] => {
+    console.log("[parseAiIdeas] Raw text:", rawText);
+    
+    
+    const lines = rawText.split('\n');
+    
+    const parsed = lines
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .map(line => {
+        
+        return line
+          .replace(/^[-*•]\s*/, '')        
+          .replace(/^\d+[.)]\s*/, '')      
+          .replace(/^\*\*(.+?)\*\*:?\s*/, '$1: ') 
+          .replace(/^#+\s*/, '')           
+          .trim();
+      })
+      .filter(line => line.length > 5);   
+    
+    console.log("[parseAiIdeas] Parsed ideas:", parsed);
+    
+    
+    if (parsed.length === 0) {
+      return [rawText.trim()];
+    }
+    
+    return parsed.slice(0, 7); 
+  };
+
+
+  const fetchMemoryIdeas = async () => {
+    setIsLoadingIdeas(true);
+    try {
+      const response = await fetch('/api/capsules/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'suggest-ideas', 
+          theme: formData.theme 
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details || 'Failed to get ideas');
+      }
+
+      const data = await response.json();
+      console.log("[fetchMemoryIdeas] Response:", data);
+      
+      const ideas = parseAiIdeas(data.result);
+      setAiMemoryIdeas(ideas);
+      toast.success(`Generated ${ideas.length} memory ideas!`);
+    } catch (error) {
+      console.error('[fetchMemoryIdeas] Error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to get ideas');
+    } finally {
+      setIsLoadingIdeas(false);
+    }
+  };
+
+  
+  const addIdeaToDescription = (idea: string) => {
+    setFormData(prev => ({
+      ...prev,
+      description: prev.description
+        ? `${prev.description}\n\n• ${idea}`
+        : `• ${idea}`,
+    }));
+    toast.success('Idea added to description!');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,10 +234,11 @@ export default function CreateCapsulePage() {
     { step: 4, label: 'Review', icon: '✅' },
   ];
 
+  
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 to-blue-50 py-10 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
+        
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Create a Time Capsule
@@ -165,7 +246,7 @@ export default function CreateCapsulePage() {
           <p className="text-gray-600">Preserve precious memories for the future</p>
         </div>
 
-        {/* Progress Bar */}
+        
         <div className="mb-8">
           <div className="flex justify-between mb-4">
             {progressSteps.map((s) => (
@@ -199,68 +280,173 @@ export default function CreateCapsulePage() {
           </div>
         </div>
 
-        {/* Form Container */}
+        
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Title & Description */}
+            
             {step === 1 && (
-              <div className="space-y-6 animate-fadeIn">
-                <div>
-                  <Label htmlFor="title" className="text-lg font-semibold mb-2 block">
-                    Capsule Title *
-                  </Label>
+              <div className="space-y-6 animate-in fade-in duration-500">
+                
+                {/* Title Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="title">Capsule Title *</Label>
                   <Input
                     id="title"
+                    placeholder="e.g. Letters to my 2030 self"
                     value={formData.title}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                    placeholder="e.g., Summer 2024 Memories"
-                    className="text-lg p-3"
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
                   />
-                  <p className="text-sm text-gray-500 mt-2">
-                    Give your capsule a meaningful name
-                  </p>
                 </div>
 
-                <div>
-                  <Label htmlFor="description" className="text-lg font-semibold mb-2 block">
-                    Description (Optional)
-                  </Label>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="theme">Theme</Label>
+                  <select
+                    id="theme"
+                    value={formData.theme}
+                    onChange={(e) => {
+                      setFormData((prev) => ({ ...prev, theme: e.target.value }));
+                      
+                      setAiMemoryIdeas([]);
+                    }}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="Childhood">Childhood</option>
+                    <option value="Family History">Family History</option>
+                    <option value="College Years">College Years</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Travel Adventures">Travel Adventures</option>
+                    <option value="Career Milestones">Career Milestones</option>
+                    <option value="Friendship">Friendship</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                
+              
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="description">The Story / Description</Label>
+                    {formData.description.trim().length > 10 && (
+                      <AiAssistant
+                        action="enhance"
+                        text={formData.description}
+                        onResult={(enhancedText) => {
+                          setFormData(prev => ({ ...prev, description: enhancedText }));
+                          toast.success('Description enhanced!');
+                        }}
+                        buttonText="✨ Enhance"
+                        variant="ghost"
+                        size="sm"
+                      />
+                    )}
+                  </div>
                   <Textarea
                     id="description"
+                    placeholder="What memories will this capsule hold? What story do you want to tell?"
                     value={formData.description}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, description: e.target.value }))
-                    }
-                    placeholder="Write about what makes this capsule special..."
-                    rows={4}
-                    className="text-base p-3"
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={5}
+                    className="resize-none"
                   />
-                  <p className="text-sm text-gray-500 mt-2">
-                    Add context that will make opening this capsule more meaningful
-                  </p>
                 </div>
-
-                <div className="flex justify-end gap-3 pt-4">
-                  <Link href="/dashboard">
-                    <Button type="button" variant="outline">
-                      Cancel
+                
+                
+                <div className="bg-linear-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm font-semibold text-indigo-900">
+                        💡 Need inspiration?
+                      </p>
+                      <p className="text-xs text-indigo-600">
+                        Get AI-powered memory ideas for your "{formData.theme}" capsule
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={fetchMemoryIdeas}
+                      disabled={isLoadingIdeas}
+                      className="gap-2 bg-white hover:bg-indigo-100"
+                    >
+                      {isLoadingIdeas ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          ✨ Get Memory Ideas
+                        </>
+                      )}
                     </Button>
-                  </Link>
-                  <Button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    Next: Add Media →
-                  </Button>
+                  </div>
+                  
+                  
+                  {aiMemoryIdeas.length > 0 && (
+                    <div className="mt-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="font-semibold text-sm text-gray-700">
+                          📝 Click any idea to add it to your description:
+                        </p>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setAiMemoryIdeas([])}
+                          className="text-gray-400 hover:text-gray-600 h-6 w-6 p-0"
+                        >
+                          <X size={16} />
+                        </Button>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {aiMemoryIdeas.map((idea, index) => (
+                          <div
+                            key={index}
+                            onClick={() => addIdeaToDescription(idea)}
+                            className="group p-3 text-sm text-gray-700 bg-linear-to-r from-indigo-50 to-transparent rounded-lg cursor-pointer hover:from-indigo-100 hover:to-purple-50 transition-all duration-200 border border-transparent hover:border-indigo-300 hover:shadow-sm"
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className="text-indigo-500 group-hover:text-indigo-600">💭</span>
+                              <span className="flex-1">{idea}</span>
+                              <span className="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                Click to add →
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-3 pt-3 border-t border-gray-100">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={fetchMemoryIdeas}
+                          disabled={isLoadingIdeas}
+                          className="text-indigo-600 hover:text-indigo-800 text-xs"
+                        >
+                          🔄 Generate new ideas
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
+                
+                
+                <Button 
+                  type="button" 
+                  className="w-full bg-indigo-600 hover:bg-indigo-700" 
+                  onClick={() => setStep(2)}
+                >
+                  Next Step →
+                </Button>
               </div>
             )}
 
-            {/* Step 2: Media Upload */}
+           
             {step === 2 && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
@@ -281,42 +467,68 @@ export default function CreateCapsulePage() {
                       className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
                     {isUploading && (
-                      <p className="text-sm text-blue-600 mt-2">Uploading...</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                        <p className="text-sm text-blue-600">Uploading...</p>
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Display uploaded files */}
+                
                 {formData.mediaFiles.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="font-semibold text-lg mb-3">
-                      📦 Uploaded Files ({formData.mediaFiles.length})
-                    </h3>
-                    <div className="space-y-2">
-                      {formData.mediaFiles.map((file, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
-                        >
-                          <div className="min-w-0 flex-1">
-                            <p className="font-medium text-gray-900 truncate">
-                              {file.name}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              Type: {file.type}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeMedia(index)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-3"
-                            title="Remove file"
-                          >
-                            <X size={18} />
-                          </button>
+                  <div className="grid grid-cols-1 gap-2 mt-4">
+                    {formData.mediaFiles.map((file, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                        <div className="flex-1">
+                          <span className="text-sm font-medium">[{file.type.toUpperCase()}] {file.name}</span>
+                          
+                          {file.caption ? (
+                            <Textarea
+                              value={file.caption}
+                              onChange={(e) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  mediaFiles: prev.mediaFiles.map((f, idx) =>
+                                    idx === i ? { ...f, caption: e.target.value } : f
+                                  ),
+                                }));
+                              }}
+                              rows={1}
+                              className="mt-1 text-xs"
+                              placeholder="Edit caption..."
+                            />
+                          ) : (
+                            <div className="mt-1">
+                              <AiAssistant
+                                action="generate-caption"
+                                text={file.name}
+                                onResult={(caption) => {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    mediaFiles: prev.mediaFiles.map((f, idx) =>
+                                      idx === i ? { ...f, caption } : f
+                                    ),
+                                  }));
+                                  toast.success(`Caption generated for ${file.name}!`);
+                                }}
+                                buttonText="Generate Caption"
+                                variant="ghost"
+                                size="sm"
+                              />
+                            </div>
+                          )}
                         </div>
-                      ))}
-                    </div>
+                        
+                        <button 
+                          type="button" 
+                          onClick={() => removeMedia(i)} 
+                          className="text-red-500 hover:text-red-700 ml-2"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
 
@@ -339,7 +551,7 @@ export default function CreateCapsulePage() {
               </div>
             )}
 
-            {/* Step 3: Recipients & Date */}
+         
             {step === 3 && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
@@ -425,34 +637,16 @@ export default function CreateCapsulePage() {
               </div>
             )}
 
-            {/* Step 4: Theme & Submit */}
+           
             {step === 4 && (
               <div className="space-y-6 animate-fadeIn">
-                <div>
-                  <Label htmlFor="theme">Theme</Label>
-                  <select
-                    id="theme"
-                    value={formData.theme}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, theme: e.target.value }))
-                    }
-                    className="w-full p-2 border rounded"
-                  >
-                    <option value="Childhood">Childhood</option>
-                    <option value="Family History">Family History</option>
-                    <option value="College Years">College Years</option>
-                    <option value="Wedding">Wedding</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                {/* Summary */}
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <p className="font-semibold mb-3">Summary:</p>
+                  <p className="font-semibold mb-3 text-lg">📋 Capsule Summary</p>
                   <ul className="space-y-2 text-sm">
                     <li>📝 <strong>Title:</strong> {formData.title || 'Not set'}</li>
+                    <li>📖 <strong>Description:</strong> {formData.description ? `${formData.description.substring(0, 100)}...` : 'Not set'}</li>
                     <li>🖼️ <strong>Media:</strong> {formData.mediaFiles.length} files</li>
-                    <li>👥 <strong>Recipients:</strong> {formData.recipients.filter(r => r).length} people</li>
+                    <li>👥 <strong>Recipients:</strong> {formData.recipients.filter(r => r).join(', ') || 'None'}</li>
                     <li>📅 <strong>Unlock Date:</strong> {format(formData.unlockDate, 'PPP')}</li>
                     <li>🎨 <strong>Theme:</strong> {formData.theme}</li>
                   </ul>
@@ -471,7 +665,14 @@ export default function CreateCapsulePage() {
                     disabled={isSubmitting}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    {isSubmitting ? 'Creating...' : '🎉 Create Capsule'}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Creating...
+                      </>
+                    ) : (
+                      '🎉 Create Capsule'
+                    )}
                   </Button>
                 </div>
               </div>
@@ -479,7 +680,7 @@ export default function CreateCapsulePage() {
           </form>
         </div>
 
-        {/* Footer */}
+      
         <div className="text-center mt-6 text-sm text-gray-600">
           <p>Step {step} of 4</p>
         </div>
