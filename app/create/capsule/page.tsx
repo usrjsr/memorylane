@@ -39,6 +39,8 @@ export default function CreateCapsulePage() {
     theme: "Childhood",
     privacy: "recipients-only" as "private" | "recipients-only" | "public",
     mediaFiles: [] as MediaFile[],
+    unlockHour: "09",
+    unlockMinute: "00",
   });
 
   const { startUpload, isUploading } = useUploadThing("capsuleUploader", {
@@ -612,20 +614,67 @@ export default function CreateCapsulePage() {
               <div className="space-y-6 animate-fadeIn">
                 <div>
                   <Label className="text-xl font-bold mb-3 block text-amber-900">
-                    Unlock Date *
+                    Unlock Date & Time *
                   </Label>
-                  <Input
-                    type="date"
-                    value={formData.unlockDate.toISOString().split("T")[0]}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        unlockDate: new Date(e.target.value),
-                      }))
-                    }
-                    className="text-base p-4 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
-                    required
-                  />
+                  <div className="space-y-3">
+                    <Input
+                      type="date"
+                      value={formData.unlockDate.toISOString().split("T")[0]}
+                      onChange={(e) => {
+                        const dateStr = e.target.value;
+                        const date = new Date(dateStr);
+                        date.setHours(parseInt(formData.unlockHour), parseInt(formData.unlockMinute));
+                        setFormData((prev) => ({
+                          ...prev,
+                          unlockDate: date,
+                        }));
+                      }}
+                      className="text-base p-4 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                      required
+                    />
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <Label className="text-sm text-amber-900 font-medium mb-1 block">Hour</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={formData.unlockHour}
+                          onChange={(e) => {
+                            const hour = e.target.value.padStart(2, "0");
+                            const date = new Date(formData.unlockDate);
+                            date.setHours(parseInt(hour), parseInt(formData.unlockMinute));
+                            setFormData((prev) => ({
+                              ...prev,
+                              unlockHour: hour,
+                              unlockDate: date,
+                            }));
+                          }}
+                          className="text-base p-3 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm text-amber-900 font-medium mb-1 block">Minute</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="59"
+                          value={formData.unlockMinute}
+                          onChange={(e) => {
+                            const minute = e.target.value.padStart(2, "0");
+                            const date = new Date(formData.unlockDate);
+                            date.setHours(parseInt(formData.unlockHour), parseInt(minute));
+                            setFormData((prev) => ({
+                              ...prev,
+                              unlockMinute: minute,
+                              unlockDate: date,
+                            }));
+                          }}
+                          className="text-base p-3 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <p className="text-sm text-amber-700 mt-3 flex items-center gap-2">
                     <svg
                       className="w-4 h-4"
@@ -781,9 +830,9 @@ export default function CreateCapsulePage() {
                     <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
                       <span className="text-xl">📅</span>
                       <div>
-                        <strong className="text-amber-900">Unlock Date:</strong>
+                        <strong className="text-amber-900">Unlock Date & Time:</strong>
                         <p className="text-amber-700">
-                          {format(formData.unlockDate, "PPP")}
+                          {format(formData.unlockDate, "PPP")} at {formData.unlockHour}:{formData.unlockMinute}
                         </p>
                       </div>
                     </li>

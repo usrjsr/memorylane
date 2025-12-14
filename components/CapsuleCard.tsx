@@ -3,15 +3,18 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { CountdownTimer } from './CountdownTimer';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import Link from 'next/link';
 
 export function CapsuleCard({ capsule }: { capsule: any }) {
   const { data: session } = useSession();
+  const [isUnlockedLocal, setIsUnlockedLocal] = useState(false);
 
   const unlockDate = new Date(capsule.unlockDate);
 
   const isUnlocked =
     capsule.status === "unlocked" ||
+    isUnlockedLocal ||
     (capsule.unlockDate &&
      !isNaN(unlockDate.getTime()) &&
      unlockDate <= new Date());
@@ -72,7 +75,7 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
               </svg>
               <p className="text-sm font-semibold text-amber-900">Locked until:</p>
             </div>
-            <CountdownTimer unlockDate={capsule.unlockDate} />
+            <CountdownTimer unlockDate={capsule.unlockDate} onUnlock={() => setIsUnlockedLocal(true)} />
             {!isUnlocked && isCollaborator && (
                   <div className="mt-4 flex gap-3">
                     <Link

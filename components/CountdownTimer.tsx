@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export function CountdownTimer({ unlockDate }: { unlockDate: Date }) {
+export function CountdownTimer({ unlockDate, onUnlock }: { unlockDate: Date; onUnlock?: () => void }) {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -17,6 +17,7 @@ export function CountdownTimer({ unlockDate }: { unlockDate: Date }) {
       
       if (distance < 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isUnlocked: true });
+        onUnlock?.();
         return;
       }
 
