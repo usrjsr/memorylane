@@ -39,7 +39,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           name: data.name,
           email: data.email,
-          password: data.password, // plain here, hashed on server
+          password: data.password,
         }),
       });
 
@@ -58,61 +58,70 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md space-y-8 rounded-lg border p-6 shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Create Account</h1>
-          <p className="text-gray-600">Join MemoryLane today</p>
+    <div className="flex min-h-screen items-center justify-center px-4 py-12 bg-amber-50">
+      <div className="w-full max-w-md space-y-8 rounded-2xl border-2 border-amber-200 p-8 sm:p-10 bg-white shadow-xl">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-amber-900">Create Account</h1>
+          <p className="text-amber-700">Join MemoryLane today</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Full Name</Label>
+        <div onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-amber-900 font-medium">Full Name</Label>
             <Input
               id="name"
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <div>
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-amber-900 font-medium">Email</Label>
             <Input
               id="email"
               type="email"
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <div>
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-amber-900 font-medium">Password</Label>
             <Input
               id="password"
               type="password"
               value={data.password}
               onChange={(e) => setData({ ...data, password: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <div>
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword" className="text-amber-900 font-medium">Confirm Password</Label>
             <Input
               id="confirmPassword"
               type="password"
               value={data.confirmPassword}
               onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button onClick={handleSubmit} className="w-full bg-amber-600 hover:bg-amber-700 text-white shadow-md h-11" disabled={isLoading}>
             {isLoading ? 'Creating account...' : 'Sign Up'}
           </Button>
-        </form>
+        </div>
 
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-amber-700">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-amber-600 hover:text-amber-800 font-semibold hover:underline">
             Sign in
           </Link>
         </p>

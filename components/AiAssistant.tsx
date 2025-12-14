@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -67,6 +66,12 @@ export function AiAssistant({
     }
   };
 
+  const customClassName = variant === 'outline' 
+    ? 'border-2 border-amber-300 text-amber-800 hover:bg-amber-50 hover:border-amber-400' 
+    : variant === 'ghost'
+    ? 'text-amber-700 hover:bg-amber-50 hover:text-amber-900'
+    : 'bg-amber-600 hover:bg-amber-700 text-white';
+
   return (
     <Button
       type="button"
@@ -74,7 +79,7 @@ export function AiAssistant({
       size={size}
       onClick={handleClick}
       disabled={isLoading}
-      className="gap-2"
+      className={`gap-2 ${customClassName} transition-colors duration-200`}
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />

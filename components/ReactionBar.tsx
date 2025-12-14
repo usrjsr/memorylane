@@ -35,18 +35,14 @@ export default function ReactionBar({
   const handleReact = async (emoji: string) => {
     setLoading(emoji);
 
-    // Optimistic update
     const userCurrent = reactions.find((r) => r.userId === userId);
 
     setReactions((prev) => {
-      // Remove any existing reaction from this user
       const withoutUser = prev.filter((r) => r.userId !== userId);
 
       if (userCurrent?.emoji === emoji) {
-        // Clicking the same → remove it
         return withoutUser;
       } else {
-        // Add or replace with new emoji
         return [...withoutUser, { _id: `temp-${Date.now()}`, capsuleId, userId, emoji }];
       }
     });
@@ -60,10 +56,10 @@ export default function ReactionBar({
 
       if (!res.ok) throw new Error("Failed");
 
-      router.refresh(); // Get real data back
+      router.refresh();
     } catch (err) {
       console.error(err);
-      setReactions(initialReactions); // Revert on error
+      setReactions(initialReactions);
     } finally {
       setLoading(null);
     }
@@ -83,11 +79,11 @@ export default function ReactionBar({
           variant={hasReacted(emoji) ? "default" : "outline"}
           onClick={() => handleReact(emoji)}
           disabled={!!loading}
-          className={`rounded-full px-4 py-2 flex items-center gap-2 transition-all hover:scale-110 ${
-            hasReacted(emoji) ? "bg-blue-600 text-white" : ""
+          className={`rounded-full px-4 py-2 flex items-center gap-2 transition-all hover:scale-110 shadow-md ${
+            hasReacted(emoji) ? "bg-amber-600 text-white hover:bg-amber-700" : "border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
           }`}
         >
-          <span>{emoji}</span>
+          <span className="text-lg">{emoji}</span>
           <span className="text-xs font-bold">{getCount(emoji)}</span>
         </Button>
       ))}

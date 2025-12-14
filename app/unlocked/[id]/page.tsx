@@ -48,12 +48,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
               </div>
             ))}
           </div>
-          <Link 
-            href="/dashboard" 
-            className="mt-4 inline-block text-blue-600 hover:underline"
-          >
-            Back to Dashboard
-          </Link>
+           <Link 
+                  href="/dashboard" 
+                  className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+                >
+                  <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Dashboard
+                </Link>
+          
         </div>
       );
     }
@@ -78,12 +82,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
         <div className="text-center py-10">
           <h2 className="text-xl font-bold text-red-600">Access denied 🚫</h2>
           <p className="text-gray-600 mt-2">You don't have permission to view this capsule.</p>
-          <Link 
-            href="/dashboard" 
-            className="mt-4 inline-block text-blue-600 hover:underline"
-          >
-            Back to Dashboard
-          </Link>
+           <Link 
+                  href="/dashboard" 
+                  className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+                >
+                  <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Dashboard
+                </Link>
+          
         </div>
       );
     }
@@ -105,12 +113,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
             <p>Current time: {new Date().toISOString()}</p>
             <p>Unlock time: {capsule.unlockDate}</p>
           </div>
-          <Link 
-            href="/dashboard" 
-            className="mt-4 inline-block text-blue-600 hover:underline"
-          >
-            Back to Dashboard
-          </Link>
+           <Link 
+        href="/dashboard" 
+        className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+      >
+        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
         </div>
       );
     }
@@ -142,9 +154,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-10">
         <div className="mb-4">
-          <Link href="/dashboard" className="text-blue-600 hover:underline">
-            ← Back to Dashboard
-          </Link>
+           <Link 
+        href="/dashboard" 
+        className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+      >
+        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
         </div>
 
         <h1 className="text-4xl font-bold text-center mb-4">{capsule.title}</h1>
@@ -263,12 +282,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
           {error instanceof Error ? error.message : 'Unknown error'}
         </p>
         <p className="text-sm text-gray-500 mt-2">ID: {(await params).id}</p>
-        <Link 
-          href="/dashboard" 
-          className="mt-4 inline-block text-blue-600 hover:underline"
-        >
-          Back to Dashboard
-        </Link>
+         <Link 
+                href="/dashboard" 
+                className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+              >
+                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Dashboard
+              </Link>
+        
       </div>
     );
   }

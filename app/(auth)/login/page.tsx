@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,20 +22,20 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         ...data,
         redirect: false,
       });
 
       if (result?.error) {
-        toast.error('Invalid email or password');
+        toast.error("Invalid email or password");
       } else {
-        toast.success('Logged in successfully!');
-        router.push('/dashboard');
+        toast.success("Logged in successfully!");
+        router.push("/dashboard");
         router.refresh();
       }
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
@@ -43,62 +43,91 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signIn('google', { callbackUrl: '/dashboard' });
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (error) {
-      toast.error('Google sign in failed');
+      toast.error("Google sign in failed");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md space-y-8 rounded-lg border p-6 shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to your account</p>
+    <div className="flex  min-h-screen items-center justify-center px-4 py-12 bg-amber-50">
+      <div className="w-full max-w-md space-y-8 rounded-2xl border-2 border-amber-200 p-8 sm:p-10 bg-white shadow-xl">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+            <svg
+              className="w-10 h-10 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+              />
+            </svg>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-amber-900">
+            Welcome Back
+          </h1>
+          <p className="text-amber-700">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="email">Email</Label>
+        <div onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-amber-900 font-medium">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <div>
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-amber-900 font-medium">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
               value={data.password}
               onChange={(e) => setData({ ...data, password: e.target.value })}
               required
+              className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
+          <Button
+            onClick={handleSubmit}
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white shadow-md h-11"
+            disabled={isLoading}
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
-        </form>
+        </div>
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t"></div>
+            <div className="w-full border-t-2 border-amber-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">Or continue with</span>
+            <span className="bg-white px-4 text-amber-700 font-medium">
+              Or continue with
+            </span>
           </div>
         </div>
 
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-full border-2 border-amber-300 text-amber-800 hover:bg-amber-50 hover:border-amber-400 h-11"
           onClick={handleGoogleSignIn}
         >
-          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+          <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
             <path
               fill="currentColor"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -119,9 +148,12 @@ export default function LoginPage() {
           Google
         </Button>
 
-        <p className="text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
+        <p className="text-center text-sm text-amber-700">
+          Don't have an account?{" "}
+          <Link
+            href="/register"
+            className="text-amber-600 hover:text-amber-800 font-semibold hover:underline"
+          >
             Sign up
           </Link>
         </p>
