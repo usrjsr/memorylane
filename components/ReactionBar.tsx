@@ -79,9 +79,8 @@ export default function ReactionBar({
           variant={hasReacted(emoji) ? "default" : "outline"}
           onClick={() => handleReact(emoji)}
           disabled={!!loading}
-          className={`rounded-full px-4 py-2 flex items-center gap-2 transition-all hover:scale-110 shadow-md ${
-            hasReacted(emoji) ? "bg-amber-600 text-white hover:bg-amber-700" : "border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
-          }`}
+          className={`rounded-full px-4 py-2 flex items-center gap-2 transition-all hover:scale-110 shadow-md ${hasReacted(emoji) ? "bg-amber-600 text-white hover:bg-amber-700" : "border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
+            }`}
         >
           <span className="text-lg">{emoji}</span>
           <span className="text-xs font-bold">{getCount(emoji)}</span>

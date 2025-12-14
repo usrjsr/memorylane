@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     // Check if unlocked
     const capsule = await Capsule.findById(capsuleId);
     const isPastUnlockDate = new Date(capsule.unlockDate) <= new Date();
-    
+
     if (capsule.status !== "unlocked" && !isPastUnlockDate) {
       return new NextResponse("Capsule is still locked", { status: 403 });
     }

@@ -88,7 +88,9 @@ export default function CapsuleUploadPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start py-10 px-4">
-      <h1 className="text-3xl font-bold text-amber-900 mb-6">Add Media to Capsule</h1>
+      <h1 className="text-3xl font-bold text-amber-900 mb-6">
+        Add Media to Capsule
+      </h1>
 
       <div className="w-full max-w-3xl space-y-6 bg-white rounded-2xl p-8 border-2 border-amber-200 shadow-lg">
         <div className="border-2 border-dashed border-amber-300 rounded-2xl p-10 bg-amber-50 hover:bg-amber-100 transition-colors">

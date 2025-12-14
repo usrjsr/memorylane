@@ -18,12 +18,12 @@ export default function RecipientInput({ recipients, setRecipients }: RecipientI
 
   const addRecipient = () => {
     const trimmedEmail = email.trim().toLowerCase();
-    
+
     if (!trimmedEmail || !isValidEmail(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
-    
+
     if (recipients.includes(trimmedEmail)) {
       setError("Recipient already added.");
       return;
@@ -59,9 +59,9 @@ export default function RecipientInput({ recipients, setRecipients }: RecipientI
           onKeyDown={handleKeyDown}
           className="flex-1 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
         />
-        <Button 
-          type="button" 
-          onClick={addRecipient} 
+        <Button
+          type="button"
+          onClick={addRecipient}
           variant="outline"
           className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
         >
@@ -69,7 +69,7 @@ export default function RecipientInput({ recipients, setRecipients }: RecipientI
           Add
         </Button>
       </div>
-      
+
       {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
 
       {recipients.length > 0 && (

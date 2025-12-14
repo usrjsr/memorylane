@@ -23,7 +23,10 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { capsuleId, mediaFiles }: { capsuleId: string; mediaFiles: IncomingMedia[] } = body;
+    const {
+      capsuleId,
+      mediaFiles,
+    }: { capsuleId: string; mediaFiles: IncomingMedia[] } = body;
 
     if (!capsuleId || !Array.isArray(mediaFiles) || mediaFiles.length === 0) {
       return new NextResponse("Missing required fields", { status: 400 });
@@ -52,19 +55,24 @@ export async function POST(req: Request) {
     }
 
     if (createdMedia.length > 0) {
-      capsule.mediaIds.push(...createdMedia.map(d => d._id));
+      capsule.mediaIds.push(...createdMedia.map((d) => d._id));
       await capsule.save();
     }
 
-    return NextResponse.json({
-      capsuleId: capsule._id.toString(),
-      addedCount: createdMedia.length,
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        capsuleId: capsule._id.toString(),
+        addedCount: createdMedia.length,
+      },
+      { status: 201 }
+    );
   } catch (err) {
     console.error("💥 [UPLOAD_MEDIA] Error:", err);
     return NextResponse.json(
-      { error: "Internal Server Error", details: err instanceof Error ? err.message : "Unknown" },
+      {
+        error: "Internal Server Error",
+        details: err instanceof Error ? err.message : "Unknown",
+      },
       { status: 500 }
     );
   }

@@ -53,10 +53,10 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
     capsule.status === "unlocked" ||
     isUnlockedLocal ||
     (capsule.unlockDate &&
-     !isNaN(unlockDate.getTime()) &&
-     unlockDate <= new Date());
+      !isNaN(unlockDate.getTime()) &&
+      unlockDate <= new Date());
 
-  
+
   const isCollaborator = session?.user?.id && capsule.collaborators?.some(
     (collab: any) => {
       const collaboratorId = typeof collab === 'string' ? collab : collab?._id?.toString() || collab?.toString();
@@ -97,7 +97,7 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
           {capsule.description || 'No description'}
         </p>
         {isUnlocked ? (
-          <Link 
+          <Link
             href={`/unlocked/${capsuleId}`}
             className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold transition-colors duration-200 group"
           >
@@ -114,17 +114,17 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
             </div>
             <CountdownTimer unlockDate={capsule.unlockDate} onUnlock={handleCapsuleUnlock} />
             {!isUnlocked && isCollaborator && (
-                  <div className="mt-4 flex gap-3">
-                    <Link
-                      href={`/capsule/${capsuleId}/upload`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
+              <div className="mt-4 flex gap-3">
+                <Link
+                  href={`/capsule/${capsuleId}/upload`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
                                 bg-amber-600 text-white font-semibold
                                 hover:bg-amber-700 transition-all shadow"
-                    >
-                      ➕ Add Memory
-                    </Link>
-                  </div>
-                )}
+                >
+                  ➕ Add Memory
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

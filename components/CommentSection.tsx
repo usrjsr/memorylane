@@ -61,7 +61,7 @@ export default function CommentSection({ capsuleId, initialComments }: CommentSe
             className="bg-white border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
             disabled={isSubmitting}
           />
-          <Button 
+          <Button
             onClick={handleSubmit}
             disabled={isSubmitting || !text.trim()}
             className="bg-amber-600 hover:bg-amber-700 text-white shadow-md px-6 font-semibold"
@@ -97,8 +97,8 @@ export default function CommentSection({ capsuleId, initialComments }: CommentSe
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {new Date(comment.createdAt).toLocaleDateString('en-US', { 
-                        month: 'short', 
+                      {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
                         day: 'numeric',
                         year: 'numeric'
                       })}

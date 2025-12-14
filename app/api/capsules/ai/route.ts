@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/auth";
-import { generateCaption, summarizeText, enhanceDescription, suggestMemoryIdeas } from "@/lib/ai";
+import {
+  generateCaption,
+  summarizeText,
+  enhanceDescription,
+  suggestMemoryIdeas,
+} from "@/lib/ai";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +17,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { action, text, theme } = body;
 
-    console.log("[AI API] Request:", { action, textLength: text?.length, theme });
+    console.log("[AI API] Request:", {
+      action,
+      textLength: text?.length,
+      theme,
+    });
 
     let result;
 
@@ -44,11 +53,11 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ result });
   } catch (error) {
-  console.error("[AI API] Error:", error);
+    console.error("[AI API] Error:", error);
 
-  return NextResponse.json({
-    result: "✨ This memory is special — words will find it soon.",
-    fallback: true,
-  });
-}
+    return NextResponse.json({
+      result: "✨ This memory is special — words will find it soon.",
+      fallback: true,
+    });
+  }
 }

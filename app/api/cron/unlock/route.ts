@@ -22,7 +22,9 @@ export async function GET(req: Request) {
       unlockDate: { $lte: new Date() },
     });
 
-    console.log(`🔓 [CRON] Found ${capsulesToUnlock.length} capsules to unlock`);
+    console.log(
+      `🔓 [CRON] Found ${capsulesToUnlock.length} capsules to unlock`
+    );
 
     for (const capsule of capsulesToUnlock) {
       // 1. Update status
@@ -41,9 +43,12 @@ export async function GET(req: Request) {
           capsuleId: capsule._id.toString(),
           senderName,
         });
-        
+
         if (!emailResult.success) {
-          console.error(`❌ [CRON] Failed to send unlock email to ${recipientEmail}:`, emailResult.error);
+          console.error(
+            `❌ [CRON] Failed to send unlock email to ${recipientEmail}:`,
+            emailResult.error
+          );
         }
       }
 

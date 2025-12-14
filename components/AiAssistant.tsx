@@ -66,11 +66,11 @@ export function AiAssistant({
     }
   };
 
-  const customClassName = variant === 'outline' 
-    ? 'border-2 border-amber-300 text-amber-800 hover:bg-amber-50 hover:border-amber-400' 
+  const customClassName = variant === 'outline'
+    ? 'border-2 border-amber-300 text-amber-800 hover:bg-amber-50 hover:border-amber-400'
     : variant === 'ghost'
-    ? 'text-amber-700 hover:bg-amber-50 hover:text-amber-900'
-    : 'bg-amber-600 hover:bg-amber-700 text-white';
+      ? 'text-amber-700 hover:bg-amber-50 hover:text-amber-900'
+      : 'bg-amber-600 hover:bg-amber-700 text-white';
 
   return (
     <Button

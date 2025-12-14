@@ -49,7 +49,12 @@ export async function POST(req: Request) {
       mediaFiles?: IncomingMedia[];
     } = body;
 
-    if (!title || !unlockDate || !Array.isArray(recipients) || recipients.length === 0) {
+    if (
+      !title ||
+      !unlockDate ||
+      !Array.isArray(recipients) ||
+      recipients.length === 0
+    ) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 

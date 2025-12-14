@@ -6,7 +6,11 @@ const MediaSchema = new Schema(
     uploaderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 
     fileUrl: { type: String, required: true },
-    fileType: { type: String, enum: ["image", "video", "audio", "pdf"], required: true },
+    fileType: {
+      type: String,
+      enum: ["image", "video", "audio", "pdf"],
+      required: true,
+    },
     fileName: { type: String },
     fileKey: { type: String }, // optional: lets you delete later from UploadThing
   },

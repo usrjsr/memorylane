@@ -109,7 +109,12 @@ export async function sendUnlockNotification({
     console.log("✅ [EMAIL] Unlock notification sent to:", recipientEmail);
     return { success: true, data: result };
   } catch (error) {
-    console.error("❌ [EMAIL] Failed to send unlock notification to", recipientEmail, ":", error);
+    console.error(
+      "❌ [EMAIL] Failed to send unlock notification to",
+      recipientEmail,
+      ":",
+      error
+    );
     return { success: false, error };
   }
 }

@@ -14,7 +14,7 @@ export function CountdownTimer({ unlockDate, onUnlock }: { unlockDate: Date; onU
   useEffect(() => {
     const calculateTimeLeft = () => {
       const distance = new Date(unlockDate).getTime() - new Date().getTime();
-      
+
       if (distance < 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isUnlocked: true });
         onUnlock?.();
@@ -52,21 +52,21 @@ export function CountdownTimer({ unlockDate, onUnlock }: { unlockDate: Date; onU
         </div>
         <div className="text-xs text-amber-700 font-medium mt-1">Days</div>
       </div>
-      
+
       <div className="flex flex-col items-center bg-amber-100 border-2 border-amber-300 rounded-xl p-3">
         <div className="text-2xl font-bold text-amber-900 tabular-nums">
           {String(timeLeft.hours).padStart(2, '0')}
         </div>
         <div className="text-xs text-amber-700 font-medium mt-1">Hours</div>
       </div>
-      
+
       <div className="flex flex-col items-center bg-amber-100 border-2 border-amber-300 rounded-xl p-3">
         <div className="text-2xl font-bold text-amber-900 tabular-nums">
           {String(timeLeft.minutes).padStart(2, '0')}
         </div>
         <div className="text-xs text-amber-700 font-medium mt-1">Mins</div>
       </div>
-      
+
       <div className="flex flex-col items-center bg-amber-100 border-2 border-amber-300 rounded-xl p-3">
         <div className="text-2xl font-bold text-amber-900 tabular-nums">
           {String(timeLeft.seconds).padStart(2, '0')}

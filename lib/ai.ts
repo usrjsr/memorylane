@@ -22,12 +22,11 @@ async function callGeminiAPI(prompt: string): Promise<string> {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 512, 
+          maxOutputTokens: 512,
         },
       }),
     });
 
-    
     if (!response.ok) {
       const err = await response.text();
       console.error("[Gemini API Error]", err);
@@ -45,7 +44,6 @@ async function callGeminiAPI(prompt: string): Promise<string> {
     const finalText = text.trim();
     cache.set(prompt, finalText);
     return finalText;
-
   } catch (err) {
     console.error("[Gemini Fatal]", err);
     return "✨ A beautiful memory that deserves to be remembered.";

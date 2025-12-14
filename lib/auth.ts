@@ -60,20 +60,19 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-  async jwt({ token, user, account }) {
-   
-    if (user) {
-      await dbConnect();
-      
-      const dbUser = await User.findOne({ email: user.email });
-      if (dbUser) {
-        token.id = dbUser._id.toString(); 
-      } else {
-        token.id = user.id;
+    async jwt({ token, user, account }) {
+      if (user) {
+        await dbConnect();
+
+        const dbUser = await User.findOne({ email: user.email });
+        if (dbUser) {
+          token.id = dbUser._id.toString();
+        } else {
+          token.id = user.id;
+        }
       }
-    }
-    return token;
-  },
+      return token;
+    },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;

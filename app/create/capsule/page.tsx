@@ -153,7 +153,6 @@ export default function CreateCapsulePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    
     if (formData.privacy !== "private") {
       const validRecipients = recipients.filter((r) => r.trim());
       if (validRecipients.length === 0) {
@@ -346,7 +345,10 @@ export default function CreateCapsulePage() {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        privacy: e.target.value as "private" | "recipients-only" | "public",
+                        privacy: e.target.value as
+                          | "private"
+                          | "recipients-only"
+                          | "public",
                       })
                     }
                     className="w-full p-3 border-2 border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 text-amber-900 font-medium bg-white"
@@ -356,9 +358,12 @@ export default function CreateCapsulePage() {
                     <option value="public">Public</option>
                   </select>
                   <p className="text-xs text-amber-700 mt-2">
-                    {formData.privacy === "private" && "Only you can view this capsule."}
-                    {formData.privacy === "recipients-only" && "Only you and recipients can view this capsule."}
-                    {formData.privacy === "public" && "Anyone can view this capsule."}
+                    {formData.privacy === "private" &&
+                      "Only you can view this capsule."}
+                    {formData.privacy === "recipients-only" &&
+                      "Only you and recipients can view this capsule."}
+                    {formData.privacy === "public" &&
+                      "Anyone can view this capsule."}
                   </p>
                 </div>
 
@@ -623,7 +628,10 @@ export default function CreateCapsulePage() {
                       onChange={(e) => {
                         const dateStr = e.target.value;
                         const date = new Date(dateStr);
-                        date.setHours(parseInt(formData.unlockHour), parseInt(formData.unlockMinute));
+                        date.setHours(
+                          parseInt(formData.unlockHour),
+                          parseInt(formData.unlockMinute)
+                        );
                         setFormData((prev) => ({
                           ...prev,
                           unlockDate: date,
@@ -634,7 +642,9 @@ export default function CreateCapsulePage() {
                     />
                     <div className="flex gap-3">
                       <div className="flex-1">
-                        <Label className="text-sm text-amber-900 font-medium mb-1 block">Hour</Label>
+                        <Label className="text-sm text-amber-900 font-medium mb-1 block">
+                          Hour
+                        </Label>
                         <Input
                           type="number"
                           min="0"
@@ -643,7 +653,10 @@ export default function CreateCapsulePage() {
                           onChange={(e) => {
                             const hour = e.target.value.padStart(2, "0");
                             const date = new Date(formData.unlockDate);
-                            date.setHours(parseInt(hour), parseInt(formData.unlockMinute));
+                            date.setHours(
+                              parseInt(hour),
+                              parseInt(formData.unlockMinute)
+                            );
                             setFormData((prev) => ({
                               ...prev,
                               unlockHour: hour,
@@ -654,7 +667,9 @@ export default function CreateCapsulePage() {
                         />
                       </div>
                       <div className="flex-1">
-                        <Label className="text-sm text-amber-900 font-medium mb-1 block">Minute</Label>
+                        <Label className="text-sm text-amber-900 font-medium mb-1 block">
+                          Minute
+                        </Label>
                         <Input
                           type="number"
                           min="0"
@@ -663,7 +678,10 @@ export default function CreateCapsulePage() {
                           onChange={(e) => {
                             const minute = e.target.value.padStart(2, "0");
                             const date = new Date(formData.unlockDate);
-                            date.setHours(parseInt(formData.unlockHour), parseInt(minute));
+                            date.setHours(
+                              parseInt(formData.unlockHour),
+                              parseInt(minute)
+                            );
                             setFormData((prev) => ({
                               ...prev,
                               unlockMinute: minute,
@@ -723,7 +741,8 @@ export default function CreateCapsulePage() {
                         Collaborators (Optional)
                       </Label>
                       <p className="text-sm text-amber-700 mb-4">
-                        Add email addresses of people who can contribute media and messages to this capsule
+                        Add email addresses of people who can contribute media
+                        and messages to this capsule
                       </p>
 
                       <CollaboratorInput
@@ -746,7 +765,8 @@ export default function CreateCapsulePage() {
                   <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
                     <p className="text-sm text-blue-800 font-semibold flex items-center gap-2">
                       <span>ℹ️</span>
-                      This is a private capsule. Recipients and collaborators are not needed.
+                      This is a private capsule. Recipients and collaborators
+                      are not needed.
                     </p>
                   </div>
                 )}
@@ -820,7 +840,9 @@ export default function CreateCapsulePage() {
                     <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
                       <span className="text-xl">🤝</span>
                       <div>
-                        <strong className="text-amber-900">Collaborators:</strong>
+                        <strong className="text-amber-900">
+                          Collaborators:
+                        </strong>
                         <p className="text-amber-700">
                           {collaborators.filter((c) => c.trim()).join(", ") ||
                             "None"}
@@ -830,9 +852,12 @@ export default function CreateCapsulePage() {
                     <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
                       <span className="text-xl">📅</span>
                       <div>
-                        <strong className="text-amber-900">Unlock Date & Time:</strong>
+                        <strong className="text-amber-900">
+                          Unlock Date & Time:
+                        </strong>
                         <p className="text-amber-700">
-                          {format(formData.unlockDate, "PPP")} at {formData.unlockHour}:{formData.unlockMinute}
+                          {format(formData.unlockDate, "PPP")} at{" "}
+                          {formData.unlockHour}:{formData.unlockMinute}
                         </p>
                       </div>
                     </li>
@@ -848,8 +873,10 @@ export default function CreateCapsulePage() {
                       <div>
                         <strong className="text-amber-900">Privacy:</strong>
                         <p className="text-amber-700">
-                          {formData.privacy === "private" && "Private (Only you)"}
-                          {formData.privacy === "recipients-only" && "Recipients Only"}
+                          {formData.privacy === "private" &&
+                            "Private (Only you)"}
+                          {formData.privacy === "recipients-only" &&
+                            "Recipients Only"}
                           {formData.privacy === "public" && "Public"}
                         </p>
                       </div>

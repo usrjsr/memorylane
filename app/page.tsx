@@ -10,14 +10,14 @@ import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const router = useRouter();
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (session?.user) {
       router.push("/dashboard");
     }
   }, [session, router]);
-  
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center max-w-4xl">

@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { getAuthSession } from "@/lib/auth";
-import {dbConnect} from "@/lib/db";
+import { dbConnect } from "@/lib/db";
 import { Reaction } from "@/models/Reaction";
 import { Capsule } from "@/models/Capsule";
 
 export async function POST(req: Request) {
   try {
     const session = await getAuthSession();
-      if (!session?.user?.id) return new NextResponse("Unauthorized", { status: 401 });
+    if (!session?.user?.id)
+      return new NextResponse("Unauthorized", { status: 401 });
 
     const { capsuleId, emoji } = await req.json();
     await dbConnect();

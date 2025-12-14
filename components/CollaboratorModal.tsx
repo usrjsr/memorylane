@@ -16,7 +16,7 @@ import { toast } from "sonner";
 interface CollaboratorModalProps {
   capsuleId: string;
   initialCollaborators: { email: string; name: string }[];
-  onCollaboratorChange: () => void; 
+  onCollaboratorChange: () => void;
 }
 
 export default function CollaboratorModal({
@@ -29,10 +29,10 @@ export default function CollaboratorModal({
 
   const handleInvite = async () => {
     const trimmedEmail = email.trim().toLowerCase();
-    
+
     if (initialCollaborators.some(c => c.email === trimmedEmail)) {
-        toast.warning("User is already a collaborator.");
-        return;
+      toast.warning("User is already a collaborator.");
+      return;
     }
 
     setLoading(true);
@@ -51,7 +51,7 @@ export default function CollaboratorModal({
 
       toast.success(`${trimmedEmail} added! They can now contribute.`);
       setEmail("");
-      onCollaboratorChange(); 
+      onCollaboratorChange();
     } catch (err: any) {
       toast.error(err.message || "Failed to add collaborator.");
     } finally {
@@ -100,13 +100,13 @@ export default function CollaboratorModal({
                 >
                   <span>{collab.name || collab.email}</span>
                   <span className="text-xs text-gray-500">
-                      {collab.email}
+                    {collab.email}
                   </span>
                 </div>
               ))}
               {initialCollaborators.length === 0 && (
-                 <p className="text-gray-400 text-sm italic">
-                    Only you are contributing.
+                <p className="text-gray-400 text-sm italic">
+                  Only you are contributing.
                 </p>
               )}
             </div>

@@ -20,17 +20,17 @@ export default async function UnlockedCapsulePage({ params }: Props) {
   await dbConnect();
 
   console.log("🔍 [UNLOCKED] Looking for capsule ID:", (await params).id);
-  
+
   try {
-    const { id } = await params; 
+    const { id } = await params;
     const capsule = await Capsule.findById(id);
-    
+
     console.log("📦 [UNLOCKED] Query result:", capsule ? "Found" : "Not found");
-    
+
     if (!capsule) {
       const allCapsules = await Capsule.find({}).select('_id title').limit(5).lean();
       console.log("📊 [UNLOCKED] Sample capsules in DB:", allCapsules);
-      
+
       return (
         <div className="text-center py-10">
           <h2 className="text-xl font-bold text-red-600">Capsule not found 🥲</h2>
@@ -39,7 +39,7 @@ export default async function UnlockedCapsulePage({ params }: Props) {
             <p className="text-sm text-gray-500">Available capsules:</p>
             {allCapsules.map((c: any) => (
               <div key={c._id.toString()} className="mt-2">
-                <Link 
+                <Link
                   href={`/unlocked/${c._id}`}
                   className="text-blue-600 hover:underline"
                 >
@@ -48,16 +48,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
               </div>
             ))}
           </div>
-           <Link 
-                  href="/dashboard" 
-                  className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-                >
-                  <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Back to Dashboard
-                </Link>
-          
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
+
         </div>
       );
     }
@@ -69,9 +69,9 @@ export default async function UnlockedCapsulePage({ params }: Props) {
       (cid: any) => cid?.toString() === session.user.id
     );
 
-    console.log("🔐 [UNLOCKED] Access check:", { 
-      isOwner, 
-      isRecipient, 
+    console.log("🔐 [UNLOCKED] Access check:", {
+      isOwner,
+      isRecipient,
       isCollaborator,
       sessionUserId: session.user.id,
       capsuleOwnerId: capsule.ownerId?.toString()
@@ -82,23 +82,23 @@ export default async function UnlockedCapsulePage({ params }: Props) {
         <div className="text-center py-10">
           <h2 className="text-xl font-bold text-red-600">Access denied 🚫</h2>
           <p className="text-gray-600 mt-2">You don't have permission to view this capsule.</p>
-           <Link 
-                  href="/dashboard" 
-                  className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-                >
-                  <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Back to Dashboard
-                </Link>
-          
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
+
         </div>
       );
     }
 
     const isUnlocked = capsule.status === "unlocked";
     const isPastUnlockDate = new Date(capsule.unlockDate) <= new Date();
-    
+
     if (!isUnlocked && !isPastUnlockDate) {
       return (
         <div className="text-center py-10">
@@ -113,15 +113,15 @@ export default async function UnlockedCapsulePage({ params }: Props) {
             <p>Current time: {new Date().toISOString()}</p>
             <p>Unlock time: {capsule.unlockDate}</p>
           </div>
-           <Link 
-        href="/dashboard" 
-        className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-      >
-        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Dashboard
-      </Link>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
 
         </div>
       );
@@ -133,18 +133,18 @@ export default async function UnlockedCapsulePage({ params }: Props) {
 
     // Fetch post-unlock interactions (only if unlocked)
     // FIX: Explicitly type these variables to resolve TS error 7034
-    let comments: any[] = []; 
+    let comments: any[] = [];
     let reactions: any[] = [];
-    
+
     if (isUnlocked || isPastUnlockDate) {
       // Fetch comments
       comments = await Comment.find({ capsuleId: capsule._id })
         .sort({ createdAt: -1 })
         .lean();
-      
+
       // Fetch reactions
       reactions = await Reaction.find({ capsuleId: capsule._id }).lean();
-      
+
       console.log("💬 [UNLOCKED] Interactions:", {
         comments: comments.length,
         reactions: reactions.length
@@ -154,15 +154,15 @@ export default async function UnlockedCapsulePage({ params }: Props) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-10">
         <div className="mb-4">
-           <Link 
-        href="/dashboard" 
-        className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-      >
-        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Dashboard
-      </Link>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
 
         </div>
 
@@ -230,8 +230,8 @@ export default async function UnlockedCapsulePage({ params }: Props) {
               <p className="text-gray-600 mb-4">
                 How does this memory make you feel? React with an emoji!
               </p>
-              <ReactionBar 
-                capsuleId={capsule._id.toString()} 
+              <ReactionBar
+                capsuleId={capsule._id.toString()}
                 initialReactions={reactions}
                 userId={session.user.id}
               />
@@ -242,8 +242,8 @@ export default async function UnlockedCapsulePage({ params }: Props) {
               <p className="text-gray-600 mb-4">
                 Share your thoughts, memories, or reflections about this capsule.
               </p>
-              <CommentSection 
-                capsuleId={capsule._id.toString()} 
+              <CommentSection
+                capsuleId={capsule._id.toString()}
                 initialComments={comments}
                 userId={session.user.id}
               />
@@ -282,16 +282,16 @@ export default async function UnlockedCapsulePage({ params }: Props) {
           {error instanceof Error ? error.message : 'Unknown error'}
         </p>
         <p className="text-sm text-gray-500 mt-2">ID: {(await params).id}</p>
-         <Link 
-                href="/dashboard" 
-                className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-              >
-                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Back to Dashboard
-              </Link>
-        
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+        >
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Dashboard
+        </Link>
+
       </div>
     );
   }
