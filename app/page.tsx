@@ -1,7 +1,21 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+
 
 export default function HomePage() {
+  const router = useRouter();
+  const { data: session } = useSession(); // hook works client-side
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center max-w-4xl">
