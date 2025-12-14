@@ -31,16 +31,21 @@ export async function POST(
     
     const owner = await User.findById(capsule.ownerId);
     const senderName = owner?.name || "Someone special";
+    const ownerEmail = owner?.email;
 
-   const recipientEmails = capsule.recipientEmails as string[];
-    const emailPromises = recipientEmails.map((recipientEmail: string) =>
+    // Send to owner + recipients
+    const recipientEmails = capsule.recipientEmails as string[];
+    const collaboratorEmails = capsule.collaboratorEmails as string[];
+    const allEmails = [...new Set([ownerEmail, ...recipientEmails,...collaboratorEmails].filter(Boolean))];
+    
+    const emailPromises = allEmails.map((email: string) =>
         sendUnlockNotification({
-            recipientEmail,
+            recipientEmail: email,
             capsuleTitle: capsule.title,
             capsuleId: capsule._id.toString(),
             senderName,
         })
-        );
+    );
 
 
     const results = await Promise.all(emailPromises);

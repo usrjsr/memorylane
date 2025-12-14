@@ -15,9 +15,14 @@ type IncomingMedia = {
   key?: string;
 };
 
+const isString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
 export async function POST(req: Request) {
   const session = await getAuthSession();
-  if (!session?.user?.id) return new NextResponse("Unauthorized", { status: 401 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
 
   await dbConnect();
 
@@ -50,30 +55,30 @@ export async function POST(req: Request) {
 
     const ownerObjectId = new mongoose.Types.ObjectId(session.user.id);
 
-    // Resolve collaborator emails to user IDs
     const collaboratorIds = [ownerObjectId];
-    const collaboratorEmails = collaborators ? collaborators.filter((e) => e && e.trim()) : [];
-    
+    const collaboratorEmails = Array.isArray(collaborators)
+      ? collaborators.filter(isString)
+      : [];
+
     if (collaboratorEmails.length > 0) {
       const foundUsers = await User.find(
         { email: { $in: collaboratorEmails } },
         "_id"
       );
-      foundUsers.forEach((user) => {
-        if (!collaboratorIds.includes(user._id)) {
+      for (const user of foundUsers) {
+        if (!collaboratorIds.some((id) => id.equals(user._id))) {
           collaboratorIds.push(user._id);
         }
-      });
+      }
     }
 
-    // 1) Create capsule first
     const capsule = await Capsule.create({
       title,
       description,
       ownerId: ownerObjectId,
       collaborators: collaboratorIds,
-      recipientEmails: recipients.filter((e) => e && e.trim()),
-      collaboratorEmails: collaboratorEmails,
+      recipientEmails: recipients.filter(isString),
+      collaboratorEmails,
       unlockType: "date",
       unlockDate: new Date(unlockDate),
       status: "locked",
@@ -82,14 +87,12 @@ export async function POST(req: Request) {
       mediaIds: [],
     });
 
-    // 2) Create media docs (if any)
     const cleanMedia = Array.isArray(mediaFiles) ? mediaFiles : [];
     const createdMedia = [];
 
     for (const m of cleanMedia) {
       if (!m?.url || !m?.type) continue;
 
-      // IMPORTANT: m.type must be normalized ('image'|'video'|'audio'|'pdf')
       const doc = await Media.create({
         capsuleId: capsule._id,
         uploaderId: ownerObjectId,
@@ -102,20 +105,21 @@ export async function POST(req: Request) {
       createdMedia.push(doc);
     }
 
-    // 3) Save mediaIds on capsule
     if (createdMedia.length > 0) {
       capsule.mediaIds = createdMedia.map((d) => d._id);
       await capsule.save();
     }
 
-    // 4) Get owner details for email
     const owner = await User.findById(ownerObjectId);
     const ownerName = owner?.name || "Someone";
     const formattedUnlockDate = format(new Date(unlockDate), "PPPpp");
 
-    // 5) Send emails to recipients and collaborators
-    const allEmails = [...new Set([...recipients.filter((e) => e && e.trim()), ...collaboratorEmails])];
-    
+    const allEmails = [
+      owner?.email,
+      ...recipients,
+      ...collaboratorEmails,
+    ].filter(isString);
+
     for (const email of allEmails) {
       await sendCapsuleCreationNotification({
         recipientEmail: email,
@@ -126,12 +130,6 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("✅ [CAPSULE_CREATE] Created", {
-      capsuleId: capsule._id.toString(),
-      mediaCount: createdMedia.length,
-      emailsSent: allEmails.length,
-    });
-
     return NextResponse.json(
       {
         capsuleId: capsule._id.toString(),
@@ -140,9 +138,11 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (err) {
-    console.error("💥 [CAPSULE_CREATE] Error:", err);
     return NextResponse.json(
-      { error: "Internal Server Error", details: err instanceof Error ? err.message : "Unknown" },
+      {
+        error: "Internal Server Error",
+        details: err instanceof Error ? err.message : "Unknown",
+      },
       { status: 500 }
     );
   }
