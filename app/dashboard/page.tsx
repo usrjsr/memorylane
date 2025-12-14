@@ -44,15 +44,28 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Your Time Capsules</h1>
-        <Link 
-          href="/create/capsule" 
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-        >
-          + New Capsule
-        </Link>
-      </div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+  <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+    Your Time Capsules
+  </h1>
+
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+    <Link
+      href="/create/capsule"
+      className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-center"
+    >
+      + New Capsule
+    </Link>
+
+    <Link
+      href="/dashboard/collections"
+      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-center"
+    >
+      View Collection
+    </Link>
+  </div>
+</div>
+
       
       {serializedCapsules.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed rounded-lg">

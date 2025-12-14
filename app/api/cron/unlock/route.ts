@@ -1,82 +1,57 @@
 // app/api/cron/unlock/route.ts
-import { NextResponse } from 'next/server';
-import { dbConnect } from '@/lib/db';
-import { Capsule } from '@/models/Capsule';
-import { sendUnlockEmail } from '@/lib/email';
 
-export async function GET(request: Request) {
+import { NextResponse } from "next/server";
+import { dbConnect } from "@/lib/db";
+import { Capsule } from "@/models/Capsule";
+import { User } from "@/models/User";
+import { sendUnlockNotification } from "@/lib/email";
+
+export async function GET(req: Request) {
+  // Optional: Verify cron secret for security (Uncomment this when deploying)
+  // const authHeader = req.headers.get("authorization");
+  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  //     return new NextResponse("Unauthorized", { status: 401 });
+  // }
+
   try {
-    // Verify this is a legitimate cron request (for Vercel Cron)
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     await dbConnect();
-    
-    const now = new Date();
-    console.log(`⏰ [CRON] Running unlock check at ${now.toISOString()}`);
-    
-    // Find all locked capsules whose unlock date has passed
-    const capsulesReadyToUnlock = await Capsule.find({
-      status: 'locked',
-      unlockDate: { $lte: now }
+
+    // Find all capsules that should be unlocked
+    const capsulesToUnlock = await Capsule.find({
+      status: "locked",
+      unlockDate: { $lte: new Date() },
     });
-    
-    console.log(`📦 [CRON] Found ${capsulesReadyToUnlock.length} capsules ready to unlock`);
-    
-    const unlockResults = [];
-    
-    for (const capsule of capsulesReadyToUnlock) {
-      try {
-        // Update status to unlocked
-        capsule.status = 'unlocked';
-        await capsule.save();
-        
-        // Send email notifications to all recipients
-        if (capsule.recipientEmails && capsule.recipientEmails.length > 0) {
-          await sendUnlockEmail({
-            recipients: capsule.recipientEmails,
-            capsuleTitle: capsule.title,
-            capsuleId: capsule._id.toString(),
-            unlockDate: capsule.unlockDate
-          });
-        }
-        
-        unlockResults.push({
-          id: capsule._id,
-          title: capsule.title,
-          recipients: capsule.recipientEmails.length,
-          status: 'success'
-        });
-        
-        console.log(`✅ [CRON] Unlocked capsule: ${capsule.title}`);
-      } catch (error) {
-        console.error(`❌ [CRON] Failed to unlock capsule ${capsule._id}:`, error);
-        unlockResults.push({
-          id: capsule._id,
-          title: capsule.title,
-          status: 'failed',
-          error: error instanceof Error ? error.message : 'Unknown error'
+
+    console.log(`🔓 [CRON] Found ${capsulesToUnlock.length} capsules to unlock`);
+
+    for (const capsule of capsulesToUnlock) {
+      // 1. Update status
+      capsule.status = "unlocked";
+      await capsule.save();
+
+      // 2. Get the owner's name for the email
+      const owner = await User.findById(capsule.ownerId);
+      const senderName = owner?.name || "Someone special";
+
+      // 3. Send email to each recipient
+      for (const recipientEmail of capsule.recipientEmails || []) {
+        await sendUnlockNotification({
+          recipientEmail,
+          capsuleTitle: capsule.title,
+          capsuleId: capsule._id.toString(),
+          senderName,
         });
       }
+
+      console.log(`✅ [CRON] Unlocked and notified: ${capsule.title}`);
     }
-    
+
     return NextResponse.json({
-      message: 'Unlock check completed',
-      timestamp: now.toISOString(),
-      processed: capsulesReadyToUnlock.length,
-      results: unlockResults
+      success: true,
+      unlocked: capsulesToUnlock.length,
     });
-    
   } catch (error) {
-    console.error('💥 [CRON] Fatal error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Cron job failed', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
-      },
-      { status: 500 }
-    );
+    console.error("💥 [CRON] Error:", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

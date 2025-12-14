@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { X, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { AiAssistant } from '@/components/AiAssistant';
+import RecipientInput from '@/components/RecipientInput';
 
 type MediaFile = {
   url: string;
@@ -26,6 +27,8 @@ export default function CreateCapsulePage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Separate state for recipients managed by RecipientInput
+const [recipients, setRecipients] = useState<string[]>([]);
   
   const [aiMemoryIdeas, setAiMemoryIdeas] = useState<string[]>([]);
   const [isLoadingIdeas, setIsLoadingIdeas] = useState(false);
@@ -34,7 +37,6 @@ export default function CreateCapsulePage() {
     title: '',
     description: '',
     unlockDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-    recipients: [''],
     theme: 'Childhood',
     privacy: 'recipients-only' as 'private' | 'recipients-only' | 'public',
     mediaFiles: [] as MediaFile[],
@@ -154,7 +156,8 @@ export default function CreateCapsulePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validRecipients = formData.recipients.filter((r) => r.trim());
+    // Use recipients state from RecipientInput
+    const validRecipients = recipients.filter((r) => r.trim());
     if (validRecipients.length === 0) {
       toast.error('Please add at least one recipient');
       return;
@@ -175,7 +178,7 @@ export default function CreateCapsulePage() {
           title: formData.title,
           description: formData.description,
           unlockDate: formData.unlockDate.toISOString(),
-          recipients: validRecipients,
+          recipients: validRecipients, // Use the recipients state
           mediaFiles: formData.mediaFiles,
           theme: formData.theme,
           privacy: formData.privacy,
@@ -197,27 +200,6 @@ export default function CreateCapsulePage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const addRecipient = () => {
-    setFormData((prev) => ({
-      ...prev,
-      recipients: [...prev.recipients, ''],
-    }));
-  };
-
-  const removeRecipient = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      recipients: prev.recipients.filter((_, i) => i !== index),
-    }));
-  };
-
-  const updateRecipient = (index: number, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      recipients: prev.recipients.map((email, i) => (i === index ? value : email)),
-    }));
   };
 
   const removeMedia = (index: number) => {
@@ -583,35 +565,15 @@ export default function CreateCapsulePage() {
                     Add email addresses of people who should receive this capsule
                   </p>
 
-                  <div className="space-y-3">
-                    {formData.recipients.map((email, index) => (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          type="email"
-                          value={email}
-                          onChange={(e) => updateRecipient(index, e.target.value)}
-                          placeholder="recipient@example.com"
-                          className="flex-1 text-base p-3"
-                          required
-                        />
-                        {index > 0 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            onClick={() => removeRecipient(index)}
-                            className="px-3"
-                          >
-                            <X size={18} />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  {/* Replace custom recipient input with the new component */}
+                  <RecipientInput 
+                    recipients={recipients} 
+                    setRecipients={setRecipients} 
+                  />
 
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={addRecipient}
                     className="mt-3 w-full"
                   >
                     + Add Another Recipient
@@ -646,7 +608,7 @@ export default function CreateCapsulePage() {
                     <li>📝 <strong>Title:</strong> {formData.title || 'Not set'}</li>
                     <li>📖 <strong>Description:</strong> {formData.description ? `${formData.description.substring(0, 100)}...` : 'Not set'}</li>
                     <li>🖼️ <strong>Media:</strong> {formData.mediaFiles.length} files</li>
-                    <li>👥 <strong>Recipients:</strong> {formData.recipients.filter(r => r).join(', ') || 'None'}</li>
+                    <li>👥 <strong>Recipients:</strong> {recipients.filter(r => r.trim()).join(', ') || 'None'}</li>
                     <li>📅 <strong>Unlock Date:</strong> {format(formData.unlockDate, 'PPP')}</li>
                     <li>🎨 <strong>Theme:</strong> {formData.theme}</li>
                   </ul>
