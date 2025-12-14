@@ -27,13 +27,14 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
     <Card className="border-2 border-amber-200 bg-white hover:shadow-xl transition-all duration-300 hover:border-amber-300 rounded-2xl overflow-hidden">
       <CardHeader className="bg-amber-50 border-b-2 border-amber-200 pb-4">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 bg-amber-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-12 h-12 bg-amber-600 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
             <CardTitle className="text-xl font-bold text-amber-900 truncate">{capsule.title}</CardTitle>
+            <CardTitle className="text-sm text-amber-900 truncate">Owner: {capsule.ownerId.name}</CardTitle>
             <CardDescription className="text-amber-700 font-medium mt-1">
               {capsule.theme || 'Other'}
             </CardDescription>
@@ -61,7 +62,18 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
               <p className="text-sm font-semibold text-amber-900">Locked until:</p>
             </div>
             <CountdownTimer unlockDate={capsule.unlockDate} />
-            <p className="text-xs text-amber-600 mt-3 font-mono">ID: {capsuleId}</p>
+            {!isUnlocked && (
+                  <div className="mt-4 flex gap-3">
+                    <Link
+                      href={`/capsule/${capsuleId}/upload`}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                                bg-amber-600 text-white font-semibold
+                                hover:bg-amber-700 transition-all shadow"
+                    >
+                      ➕ Add Memory
+                    </Link>
+                  </div>
+                )}
           </div>
         )}
       </CardContent>

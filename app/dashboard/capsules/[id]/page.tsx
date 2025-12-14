@@ -15,7 +15,10 @@ export default async function CapsuleDetailPage({ params }: Props) {
   const { id } = await params;
   await dbConnect();
 
-  const capsule = await Capsule.findById(id).lean();
+const capsule = await Capsule.findById(id)
+  .populate('ownerId', 'name email')
+  .lean();
+
 
   if (!capsule) {
     return (

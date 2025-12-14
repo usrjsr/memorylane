@@ -24,17 +24,25 @@ export default async function DashboardPage() {
   }
 
   const capsules = await Capsule.find({
-    $or: [
-      { ownerId: userId },
-      { collaborators: userId },
-      { recipientEmails: session.user.email },
-    ],
-  }).sort({ createdAt: -1 });
+  $or: [
+    { ownerId: userId },
+    { collaborators: userId },
+    { recipientEmails: session.user.email },
+  ],
+}).populate("ownerId", "name email")
+  .sort({ createdAt: -1 });
+
 
   const serializedCapsules = capsules.map((capsule) => ({
     ...capsule.toObject(),
     _id: capsule._id.toString(),
-    ownerId: capsule.ownerId?.toString(),
+    ownerId: capsule.ownerId
+  ? {
+      _id: capsule.ownerId._id.toString(),
+      name: capsule.ownerId.name,
+      email: capsule.ownerId.email,
+    }
+  : null,
     collaborators: capsule.collaborators?.map((c: any) => c.toString()),
   }));
 
