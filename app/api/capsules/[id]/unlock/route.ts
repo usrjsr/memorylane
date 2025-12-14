@@ -33,10 +33,9 @@ export async function POST(
     const senderName = owner?.name || "Someone special";
     const ownerEmail = owner?.email;
 
-    // Send to owner + recipients
-    const recipientEmails = capsule.recipientEmails as string[];
-    const collaboratorEmails = capsule.collaboratorEmails as string[];
-    const allEmails = [...new Set([ownerEmail, ...recipientEmails,...collaboratorEmails].filter(Boolean))];
+    // Send to owner + recipients (collaboratorEmails doesn't exist in model)
+    const recipientEmails = Array.isArray(capsule.recipientEmails) ? capsule.recipientEmails : [];
+    const allEmails = [...new Set([ownerEmail, ...recipientEmails].filter(Boolean))];
     
     const emailPromises = allEmails.map((email: string) =>
         sendUnlockNotification({
@@ -49,6 +48,7 @@ export async function POST(
 
 
     const results = await Promise.all(emailPromises);
+    const successCount = results.filter((r) => r.success).length;
     const failedEmails = results.filter((r) => !r.success);
 
     if (failedEmails.length > 0) {
@@ -58,13 +58,13 @@ export async function POST(
     }
 
     console.log(
-      `✅ [API] Capsule ${id} unlocked and ${results.length} emails sent`
+      `✅ [API] Capsule ${id} unlocked and ${successCount}/${allEmails.length} emails sent to: ${allEmails.join(", ")}`
     );
 
     return NextResponse.json({
       success: true,
       message: "Capsule unlocked and emails sent",
-      emailsSent: results.filter((r) => r.success).length,
+      emailsSent: successCount,
     });
   } catch (error) {
     console.error("❌ [API] Error unlocking capsule:", error);
