@@ -57,13 +57,13 @@ export default function CollaboratorInput({ collaborators, setCollaborators }: C
             setError("");
           }}
           onKeyDown={handleKeyDown}
-          className="flex-1 border-2 border-blue-200 focus:border-blue-600 focus:ring-blue-600"
+          className="flex-1 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
         />
         <Button 
           type="button" 
           onClick={addCollaborator} 
           variant="outline"
-          className="border-2 border-blue-300 text-blue-800 hover:bg-blue-50"
+          className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
         >
           <UserPlus className="h-4 w-4 mr-2" />
           Add
@@ -77,13 +77,13 @@ export default function CollaboratorInput({ collaborators, setCollaborators }: C
           {collaborators.map((collaboratorEmail) => (
             <div
               key={collaboratorEmail}
-              className="flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm border border-blue-200"
+              className="flex items-center gap-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm border border-amber-200"
             >
               <span>{collaboratorEmail}</span>
               <button
                 type="button"
                 onClick={() => removeCollaborator(collaboratorEmail)}
-                className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
+                className="hover:bg-amber-200 rounded-full p-0.5 transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>
