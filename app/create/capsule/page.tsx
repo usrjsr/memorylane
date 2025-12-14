@@ -151,10 +151,13 @@ export default function CreateCapsulePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validRecipients = recipients.filter((r) => r.trim());
-    if (validRecipients.length === 0) {
-      toast.error("Please add at least one recipient");
-      return;
+    
+    if (formData.privacy !== "private") {
+      const validRecipients = recipients.filter((r) => r.trim());
+      if (validRecipients.length === 0) {
+        toast.error("Please add at least one recipient");
+        return;
+      }
     }
 
     if (!formData.title.trim()) {
@@ -172,7 +175,7 @@ export default function CreateCapsulePage() {
           title: formData.title,
           description: formData.description,
           unlockDate: formData.unlockDate.toISOString(),
-          recipients: validRecipients,
+          recipients: recipients.filter((r) => r.trim()),
           collaborators: collaborators.filter((c) => c.trim()),
           mediaFiles: formData.mediaFiles,
           theme: formData.theme,
@@ -326,6 +329,35 @@ export default function CreateCapsulePage() {
                     <option value="Friendship">Friendship</option>
                     <option value="Other">Other</option>
                   </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="privacy"
+                    className="text-amber-900 font-semibold"
+                  >
+                    Privacy Level
+                  </Label>
+                  <select
+                    id="privacy"
+                    value={formData.privacy}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        privacy: e.target.value as "private" | "recipients-only" | "public",
+                      })
+                    }
+                    className="w-full p-3 border-2 border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 text-amber-900 font-medium bg-white"
+                  >
+                    <option value="private">Private (Only you)</option>
+                    <option value="recipients-only">Recipients Only</option>
+                    <option value="public">Public</option>
+                  </select>
+                  <p className="text-xs text-amber-700 mt-2">
+                    {formData.privacy === "private" && "Only you can view this capsule."}
+                    {formData.privacy === "recipients-only" && "Only you and recipients can view this capsule."}
+                    {formData.privacy === "public" && "Anyone can view this capsule."}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -612,50 +644,63 @@ export default function CreateCapsulePage() {
                   </p>
                 </div>
 
-                <div>
-                  <Label className="text-xl font-bold mb-3 block text-amber-900">
-                    Recipients (Email Addresses) *
-                  </Label>
-                  <p className="text-sm text-amber-700 mb-4">
-                    Add email addresses of people who should receive this
-                    capsule
-                  </p>
+                {formData.privacy !== "private" && (
+                  <>
+                    <div>
+                      <Label className="text-xl font-bold mb-3 block text-amber-900">
+                        Recipients (Email Addresses) *
+                      </Label>
+                      <p className="text-sm text-amber-700 mb-4">
+                        Add email addresses of people who should receive this
+                        capsule
+                      </p>
 
-                  <RecipientInput
-                    recipients={recipients}
-                    setRecipients={setRecipients}
-                  />
+                      <RecipientInput
+                        recipients={recipients}
+                        setRecipients={setRecipients}
+                      />
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="mt-4 w-full border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
-                  >
-                    + Add Another Recipient
-                  </Button>
-                </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="mt-4 w-full border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
+                      >
+                        + Add Another Recipient
+                      </Button>
+                    </div>
 
-                <div>
-                  <Label className="text-xl font-bold mb-3 block text-amber-900">
-                    Collaborators (Optional)
-                  </Label>
-                  <p className="text-sm text-amber-700 mb-4">
-                    Add email addresses of people who can contribute media and messages to this capsule
-                  </p>
+                    <div>
+                      <Label className="text-xl font-bold mb-3 block text-amber-900">
+                        Collaborators (Optional)
+                      </Label>
+                      <p className="text-sm text-amber-700 mb-4">
+                        Add email addresses of people who can contribute media and messages to this capsule
+                      </p>
 
-                  <CollaboratorInput
-                    collaborators={collaborators}
-                    setCollaborators={setCollaborators}
-                  />
+                      <CollaboratorInput
+                        collaborators={collaborators}
+                        setCollaborators={setCollaborators}
+                      />
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="mt-4 w-full border-2 border-blue-300 text-blue-800 hover:bg-blue-50"
-                  >
-                    + Add Another Collaborator
-                  </Button>
-                </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="mt-4 w-full border-2 border-blue-300 text-blue-800 hover:bg-blue-50"
+                      >
+                        + Add Another Collaborator
+                      </Button>
+                    </div>
+                  </>
+                )}
+
+                {formData.privacy === "private" && (
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                    <p className="text-sm text-blue-800 font-semibold flex items-center gap-2">
+                      <span>ℹ️</span>
+                      This is a private capsule. Recipients and collaborators are not needed.
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex justify-between gap-4 pt-6">
                   <Button
@@ -747,6 +792,17 @@ export default function CreateCapsulePage() {
                       <div>
                         <strong className="text-amber-900">Theme:</strong>
                         <p className="text-amber-700">{formData.theme}</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                      <span className="text-xl">🔒</span>
+                      <div>
+                        <strong className="text-amber-900">Privacy:</strong>
+                        <p className="text-amber-700">
+                          {formData.privacy === "private" && "Private (Only you)"}
+                          {formData.privacy === "recipients-only" && "Recipients Only"}
+                          {formData.privacy === "public" && "Public"}
+                        </p>
                       </div>
                     </li>
                   </ul>
