@@ -2,9 +2,12 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { CountdownTimer } from './CountdownTimer';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export function CapsuleCard({ capsule }: { capsule: any }) {
+  const { data: session } = useSession();
+
   const unlockDate = new Date(capsule.unlockDate);
 
   const isUnlocked =
@@ -12,6 +15,14 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
     (capsule.unlockDate &&
      !isNaN(unlockDate.getTime()) &&
      unlockDate <= new Date());
+
+  
+  const isCollaborator = session?.user?.id && capsule.collaborators?.some(
+    (collab: any) => {
+      const collaboratorId = typeof collab === 'string' ? collab : collab?._id?.toString() || collab?.toString();
+      return collaboratorId === session.user.id;
+    }
+  );
 
   let capsuleId: string;
   if (typeof capsule._id === 'object' && capsule._id.toString) {
@@ -62,7 +73,7 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
               <p className="text-sm font-semibold text-amber-900">Locked until:</p>
             </div>
             <CountdownTimer unlockDate={capsule.unlockDate} />
-            {!isUnlocked && (
+            {!isUnlocked && isCollaborator && (
                   <div className="mt-4 flex gap-3">
                     <Link
                       href={`/capsule/${capsuleId}/upload`}

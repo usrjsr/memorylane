@@ -4,6 +4,7 @@ import { getAuthSession } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
 import { Capsule } from "@/models/Capsule";
 import { Media } from "@/models/Media";
+import { User } from "@/models/User";
 
 type IncomingMedia = {
   url: string;
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
       description,
       unlockDate,
       recipients,
+      collaborators,
       theme,
       privacy,
       mediaFiles,
@@ -34,6 +36,7 @@ export async function POST(req: Request) {
       description?: string;
       unlockDate: string | Date;
       recipients: string[];
+      collaborators?: string[];
       theme?: string;
       privacy?: string;
       mediaFiles?: IncomingMedia[];
@@ -45,13 +48,30 @@ export async function POST(req: Request) {
 
     const ownerObjectId = new mongoose.Types.ObjectId(session.user.id);
 
+    // Resolve collaborator emails to user IDs
+    const collaboratorIds = [ownerObjectId];
+    const collaboratorEmails = collaborators ? collaborators.filter((e) => e && e.trim()) : [];
+    
+    if (collaboratorEmails.length > 0) {
+      const foundUsers = await User.find(
+        { email: { $in: collaboratorEmails } },
+        "_id"
+      );
+      foundUsers.forEach((user) => {
+        if (!collaboratorIds.includes(user._id)) {
+          collaboratorIds.push(user._id);
+        }
+      });
+    }
+
     // 1) Create capsule first
     const capsule = await Capsule.create({
       title,
       description,
       ownerId: ownerObjectId,
-      collaborators: [ownerObjectId],
+      collaborators: collaboratorIds,
       recipientEmails: recipients.filter((e) => e && e.trim()),
+      collaboratorEmails: collaboratorEmails,
       unlockType: "date",
       unlockDate: new Date(unlockDate),
       status: "locked",

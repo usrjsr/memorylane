@@ -13,6 +13,7 @@ import { X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { AiAssistant } from "@/components/AiAssistant";
 import RecipientInput from "@/components/RecipientInput";
+import CollaboratorInput from "@/components/CollaboratorInput";
 
 type MediaFile = {
   url: string;
@@ -27,6 +28,7 @@ export default function CreateCapsulePage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recipients, setRecipients] = useState<string[]>([]);
+  const [collaborators, setCollaborators] = useState<string[]>([]);
   const [aiMemoryIdeas, setAiMemoryIdeas] = useState<string[]>([]);
   const [isLoadingIdeas, setIsLoadingIdeas] = useState(false);
 
@@ -171,6 +173,7 @@ export default function CreateCapsulePage() {
           description: formData.description,
           unlockDate: formData.unlockDate.toISOString(),
           recipients: validRecipients,
+          collaborators: collaborators.filter((c) => c.trim()),
           mediaFiles: formData.mediaFiles,
           theme: formData.theme,
           privacy: formData.privacy,
@@ -632,6 +635,28 @@ export default function CreateCapsulePage() {
                   </Button>
                 </div>
 
+                <div>
+                  <Label className="text-xl font-bold mb-3 block text-amber-900">
+                    Collaborators (Optional)
+                  </Label>
+                  <p className="text-sm text-amber-700 mb-4">
+                    Add email addresses of people who can contribute media and messages to this capsule
+                  </p>
+
+                  <CollaboratorInput
+                    collaborators={collaborators}
+                    setCollaborators={setCollaborators}
+                  />
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="mt-4 w-full border-2 border-blue-300 text-blue-800 hover:bg-blue-50"
+                  >
+                    + Add Another Collaborator
+                  </Button>
+                </div>
+
                 <div className="flex justify-between gap-4 pt-6">
                   <Button
                     type="button"
@@ -694,6 +719,16 @@ export default function CreateCapsulePage() {
                         <strong className="text-amber-900">Recipients:</strong>
                         <p className="text-amber-700">
                           {recipients.filter((r) => r.trim()).join(", ") ||
+                            "None"}
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                      <span className="text-xl">🤝</span>
+                      <div>
+                        <strong className="text-amber-900">Collaborators:</strong>
+                        <p className="text-amber-700">
+                          {collaborators.filter((c) => c.trim()).join(", ") ||
                             "None"}
                         </p>
                       </div>
