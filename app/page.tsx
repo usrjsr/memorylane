@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const router = useRouter();
-  const { data: session } = useSession(); // hook works client-side
+  const { data: session } = useSession(); 
 
   useEffect(() => {
     if (session?.user) {
