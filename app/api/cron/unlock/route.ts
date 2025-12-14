@@ -35,12 +35,16 @@ export async function GET(req: Request) {
 
       // 3. Send email to each recipient
       for (const recipientEmail of capsule.recipientEmails || []) {
-        await sendUnlockNotification({
+        const emailResult = await sendUnlockNotification({
           recipientEmail,
           capsuleTitle: capsule.title,
           capsuleId: capsule._id.toString(),
           senderName,
         });
+        
+        if (!emailResult.success) {
+          console.error(`❌ [CRON] Failed to send unlock email to ${recipientEmail}:`, emailResult.error);
+        }
       }
 
       console.log(`✅ [CRON] Unlocked and notified: ${capsule.title}`);

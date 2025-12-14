@@ -9,8 +9,45 @@ import Link from 'next/link';
 export function CapsuleCard({ capsule }: { capsule: any }) {
   const { data: session } = useSession();
   const [isUnlockedLocal, setIsUnlockedLocal] = useState(false);
+  const [isSendingEmails, setIsSendingEmails] = useState(false);
 
   const unlockDate = new Date(capsule.unlockDate);
+
+  const handleCapsuleUnlock = async () => {
+    setIsUnlockedLocal(true);
+
+    // Get capsule ID
+    let capsuleId: string;
+    if (typeof capsule._id === 'object' && capsule._id.toString) {
+      capsuleId = capsule._id.toString();
+    } else if (typeof capsule._id === 'string') {
+      capsuleId = capsule._id;
+    } else {
+      console.error('Invalid capsule ID format:', capsule._id);
+      return;
+    }
+
+    // Send unlock emails
+    if (!isSendingEmails) {
+      setIsSendingEmails(true);
+      try {
+        const response = await fetch(`/api/capsules/${capsuleId}/unlock`, {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Unlock emails sent:', data.emailsSent);
+        } else {
+          console.error('❌ Failed to send unlock emails');
+        }
+      } catch (error) {
+        console.error('❌ Error sending unlock emails:', error);
+      } finally {
+        setIsSendingEmails(false);
+      }
+    }
+  };
 
   const isUnlocked =
     capsule.status === "unlocked" ||
@@ -75,7 +112,7 @@ export function CapsuleCard({ capsule }: { capsule: any }) {
               </svg>
               <p className="text-sm font-semibold text-amber-900">Locked until:</p>
             </div>
-            <CountdownTimer unlockDate={capsule.unlockDate} onUnlock={() => setIsUnlockedLocal(true)} />
+            <CountdownTimer unlockDate={capsule.unlockDate} onUnlock={handleCapsuleUnlock} />
             {!isUnlocked && isCollaborator && (
                   <div className="mt-4 flex gap-3">
                     <Link

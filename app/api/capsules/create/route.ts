@@ -5,6 +5,8 @@ import { dbConnect } from "@/lib/db";
 import { Capsule } from "@/models/Capsule";
 import { Media } from "@/models/Media";
 import { User } from "@/models/User";
+import { sendCapsuleCreationNotification } from "@/lib/email";
+import { format } from "date-fns";
 
 type IncomingMedia = {
   url: string;
@@ -106,9 +108,28 @@ export async function POST(req: Request) {
       await capsule.save();
     }
 
+    // 4) Get owner details for email
+    const owner = await User.findById(ownerObjectId);
+    const ownerName = owner?.name || "Someone";
+    const formattedUnlockDate = format(new Date(unlockDate), "PPPpp");
+
+    // 5) Send emails to recipients and collaborators
+    const allEmails = [...new Set([...recipients.filter((e) => e && e.trim()), ...collaboratorEmails])];
+    
+    for (const email of allEmails) {
+      await sendCapsuleCreationNotification({
+        recipientEmail: email,
+        capsuleTitle: title,
+        capsuleId: capsule._id.toString(),
+        creatorName: ownerName,
+        unlockDate: formattedUnlockDate,
+      });
+    }
+
     console.log("✅ [CAPSULE_CREATE] Created", {
       capsuleId: capsule._id.toString(),
       mediaCount: createdMedia.length,
+      emailsSent: allEmails.length,
     });
 
     return NextResponse.json(
