@@ -67,10 +67,10 @@ export function AiAssistant({
   };
 
   const customClassName = variant === 'outline'
-    ? 'border-2 border-amber-300 text-amber-800 hover:bg-amber-50 hover:border-amber-400'
+    ? 'border-2 border-cyan-500/50 text-cyan-300 hover:bg-cyan-900/20 hover:border-cyan-400 hover:text-cyan-200'
     : variant === 'ghost'
-      ? 'text-amber-700 hover:bg-amber-50 hover:text-amber-900'
-      : 'bg-amber-600 hover:bg-amber-700 text-white';
+      ? 'text-cyan-400 hover:bg-slate-800 hover:text-cyan-300'
+      : 'bg-cyan-500 hover:bg-cyan-400 text-slate-900';
 
   return (
     <Button
@@ -79,7 +79,7 @@ export function AiAssistant({
       size={size}
       onClick={handleClick}
       disabled={isLoading}
-      className={`gap-2 ${customClassName} transition-colors duration-200`}
+      className={`gap-2 ${customClassName} transition-all duration-200 font-semibold`}
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />

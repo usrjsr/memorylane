@@ -32,37 +32,29 @@ export default async function UnlockedCapsulePage({ params }: Props) {
       console.log("📊 [UNLOCKED] Sample capsules in DB:", allCapsules);
 
       return (
-        <div className="text-center py-10">
-          <h2 className="text-xl font-bold text-red-600">Capsule not found 🥲</h2>
-          <p className="text-gray-600 mt-2">Looking for ID: {id}</p>
-          <div className="mt-4">
-            <p className="text-sm text-gray-500">Available capsules:</p>
-            {allCapsules.map((c: any) => (
-              <div key={c._id.toString()} className="mt-2">
-                <Link
-                  href={`/unlocked/${c._id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  {c.title} (ID: {c._id.toString()})
-                </Link>
-              </div>
-            ))}
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 bg-red-900/40 border-2 border-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-black text-white mb-2">Capsule Not Found 🥲</h2>
+            <p className="text-slate-400 mb-6">Looking for ID: {id}</p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-cyan-500 text-slate-900 rounded-lg hover:bg-cyan-400 font-bold transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 hover:scale-105 active:scale-95"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Dashboard
+            </Link>
           </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-          >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
-          </Link>
-
         </div>
       );
     }
 
-    // Access checks
     const isRecipient = capsule.recipientEmails?.includes(session.user.email!);
     const isOwner = capsule.ownerId?.toString() === session.user.id;
     const isCollaborator = capsule.collaborators?.some(
@@ -79,19 +71,25 @@ export default async function UnlockedCapsulePage({ params }: Props) {
 
     if (!isRecipient && !isOwner && !isCollaborator) {
       return (
-        <div className="text-center py-10">
-          <h2 className="text-xl font-bold text-red-600">Access denied 🚫</h2>
-          <p className="text-gray-600 mt-2">You don't have permission to view this capsule.</p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-          >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
-          </Link>
-
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 bg-red-900/40 border-2 border-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-black text-white mb-2">Access Denied 🚫</h2>
+            <p className="text-slate-400 mb-6">You don't have permission to view this capsule.</p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-cyan-500 text-slate-900 rounded-lg hover:bg-cyan-400 font-bold transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 hover:scale-105 active:scale-95"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Dashboard
+            </Link>
+          </div>
         </div>
       );
     }
@@ -101,48 +99,47 @@ export default async function UnlockedCapsulePage({ params }: Props) {
 
     if (!isUnlocked && !isPastUnlockDate) {
       return (
-        <div className="text-center py-10">
-          <h2 className="text-xl font-bold mb-2">⏳ This capsule is still locked</h2>
-          <p>Expected unlock date:</p>
-          <p className="font-semibold text-blue-600 mt-1">
-            {new Date(capsule.unlockDate).toLocaleDateString()}
-          </p>
-          <div className="mt-4 text-sm text-gray-500">
-            <p>Debug info:</p>
-            <p>Status: {capsule.status}</p>
-            <p>Current time: {new Date().toISOString()}</p>
-            <p>Unlock time: {capsule.unlockDate}</p>
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-20 h-20 bg-cyan-900/40 border-2 border-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-black text-white mb-4">⏳ Capsule Still Locked</h2>
+            <p className="text-slate-400 mb-2">Expected unlock date:</p>
+            <p className="text-2xl font-black text-cyan-400 mb-8">
+              {new Date(capsule.unlockDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-cyan-500 text-slate-900 rounded-lg hover:bg-cyan-400 font-bold transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 hover:scale-105 active:scale-95"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Dashboard
+            </Link>
           </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-          >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Dashboard
-          </Link>
-
         </div>
       );
     }
 
-    // Fetch media files
     const media = await Media.find({ capsuleId: capsule._id }).lean();
     console.log("🖼️ [UNLOCKED] Media files found:", media.length);
 
-    // Fetch post-unlock interactions (only if unlocked)
-    // FIX: Explicitly type these variables to resolve TS error 7034
     let comments: any[] = [];
     let reactions: any[] = [];
 
     if (isUnlocked || isPastUnlockDate) {
-      // Fetch comments
       comments = await Comment.find({ capsuleId: capsule._id })
         .sort({ createdAt: -1 })
         .lean();
 
-      // Fetch reactions
       reactions = await Reaction.find({ capsuleId: capsule._id }).lean();
 
       console.log("💬 [UNLOCKED] Interactions:", {
@@ -152,146 +149,189 @@ export default async function UnlockedCapsulePage({ params }: Props) {
     }
 
     return (
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <div className="mb-4">
+      <div className="min-h-screen bg-slate-950">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-bold mb-10 group transition-all duration-200"
           >
             <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Dashboard
           </Link>
 
-        </div>
-
-        <h1 className="text-4xl font-bold text-center mb-4">{capsule.title}</h1>
-        <p className="text-center text-gray-600 mb-1 italic">
-          Theme: {capsule.theme || "Other"}
-        </p>
-        <p className="text-center text-sm text-green-600 font-semibold mb-6">
-          🎉 This capsule has been {isUnlocked ? 'unlocked' : 'available to view'}!
-        </p>
-
-        {capsule.description && (
-          <div className="text-center mb-12 max-w-2xl mx-auto">
-            <p className="text-gray-700">{capsule.description}</p>
-          </div>
-        )}
-
-        {media.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {media.map((file: any, i: number) => (
-              <div
-                key={i}
-                className="border rounded-lg p-4 shadow-md bg-white"
-              >
-                <p className="text-sm font-medium truncate mb-2">
-                  {file.fileName || `File ${i + 1}`}
+          <div className="bg-slate-900 border-2 border-cyan-500/30 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-cyan-900/40 to-blue-900/40 border-b-2 border-cyan-500/30 p-8 sm:p-10 lg:p-12">
+              <div className="text-center">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
+                  {capsule.title}
+                </h1>
+                <p className="text-slate-400 text-lg mb-4">
+                  Theme: {capsule.theme || "Other"}
                 </p>
-                <div className="mt-2">
-                  {file.fileType === "image" && (
-                    <img
-                      src={file.fileUrl}
-                      alt={file.fileName || "Memory"}
-                      className="rounded-md w-full h-48 object-cover"
-                    />
-                  )}
-
-                  {file.fileType === "video" && (
-                    <video controls className="w-full rounded-md">
-                      <source src={file.fileUrl} />
-                      Your browser does not support video.
-                    </video>
-                  )}
-
-                  {file.fileType === "audio" && (
-                    <audio controls className="w-full">
-                      <source src={file.fileUrl} />
-                      Your browser does not support audio.
-                    </audio>
-                  )}
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-900/40 border-2 border-emerald-500 text-emerald-300 rounded-lg font-bold">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  🎉 Capsule Unlocked!
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 border-2 border-dashed rounded-lg">
-            <p className="text-gray-500">No media files in this capsule</p>
-          </div>
-        )}
-
-        {/* POST-UNLOCK INTERACTIONS SECTION */}
-        {(isUnlocked || isPastUnlockDate) && (
-          <div className="mt-12 pt-8 border-t">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Share Your Reaction</h2>
-              <p className="text-gray-600 mb-4">
-                How does this memory make you feel? React with an emoji!
-              </p>
-              <ReactionBar
-                capsuleId={capsule._id.toString()}
-                initialReactions={reactions}
-                userId={session.user.id}
-              />
             </div>
 
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Reflections & Memories</h2>
-              <p className="text-gray-600 mb-4">
-                Share your thoughts, memories, or reflections about this capsule.
-              </p>
-              <CommentSection
-                capsuleId={capsule._id.toString()}
-                initialComments={comments}
-                userId={session.user.id}
-              />
-            </div>
-
-            {/* Stats */}
-            <div className="flex gap-6 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">💬</span>
-                <span>{comments.length} reflection{comments.length !== 1 ? 's' : ''}</span>
+            {capsule.description && (
+              <div className="p-8 sm:p-10 lg:p-12">
+                <div className="text-center max-w-3xl mx-auto">
+                  <p className="text-slate-300 text-lg leading-relaxed whitespace-pre-wrap">
+                    {capsule.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg">❤️</span>
-                <span>{reactions.length} reaction{reactions.length !== 1 ? 's' : ''}</span>
-              </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* Debug info (remove in production) */}
-        <div className="mt-12 pt-6 border-t text-xs text-gray-400">
-          <p>Debug: Capsule ID: {capsule._id.toString()}</p>
-          <p>Unlock Date: {new Date(capsule.unlockDate).toLocaleString()}</p>
-          <p>Current Time: {new Date().toLocaleString()}</p>
-          <p>Status: {capsule.status}</p>
-          <p>Can Interact: {(isUnlocked || isPastUnlockDate) ? "Yes" : "No"}</p>
+            {media.length > 0 && (
+              <div className="p-8 sm:p-10 lg:p-12 border-t border-cyan-500/20">
+                <h2 className="text-2xl sm:text-3xl font-black text-white mb-8 text-center">
+                  📸 Memories & Media
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {media.map((file: any, i: number) => (
+                    <div
+                      key={i}
+                      className="bg-slate-800/50 border-2 border-slate-700/50 rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all duration-200 group"
+                    >
+                      <div className="aspect-video bg-slate-700 overflow-hidden">
+                        {file.fileType === "image" && (
+                          <img
+                            src={file.fileUrl}
+                            alt={file.fileName || "Memory"}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        )}
+
+                        {file.fileType === "video" && (
+                          <video controls className="w-full h-full">
+                            <source src={file.fileUrl} />
+                            Your browser does not support video.
+                          </video>
+                        )}
+
+                        {file.fileType === "audio" && (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-900/40 to-blue-900/40">
+                            <svg className="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <p className="text-sm font-bold text-white truncate">
+                          {file.fileName || `File ${i + 1}`}
+                        </p>
+                        {file.fileType === "audio" && (
+                          <audio controls className="w-full mt-3 h-8">
+                            <source src={file.fileUrl} />
+                            Your browser does not support audio.
+                          </audio>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {media.length === 0 && (
+              <div className="p-12 text-center border-t border-cyan-500/20">
+                <svg className="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-slate-400 text-lg">No media files in this capsule</p>
+              </div>
+            )}
+
+            {(isUnlocked || isPastUnlockDate) && (
+              <>
+                <div className="border-t border-cyan-500/20 p-8 sm:p-10 lg:p-12">
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">
+                    Share Your Reaction
+                  </h2>
+                  <p className="text-slate-400 mb-6">
+                    How does this memory make you feel? React with an emoji!
+                  </p>
+                  <ReactionBar
+                    capsuleId={capsule._id.toString()}
+                    initialReactions={reactions}
+                    userId={session.user.id}
+                  />
+                </div>
+
+                <div className="border-t border-cyan-500/20 p-8 sm:p-10 lg:p-12">
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-4">
+                    Reflections & Memories
+                  </h2>
+                  <p className="text-slate-400 mb-6">
+                    Share your thoughts, memories, or reflections about this capsule.
+                  </p>
+                  <CommentSection
+                    capsuleId={capsule._id.toString()}
+                    initialComments={comments}
+                    userId={session.user.id}
+                  />
+                </div>
+
+                <div className="border-t border-cyan-500/20 p-8 sm:p-10 lg:p-12">
+                  <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-indigo-900/40 border-2 border-indigo-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span className="text-xl">💬</span>
+                      </div>
+                      <div>
+                        <p className="text-sm text-slate-400 font-medium">Reflections</p>
+                        <p className="text-2xl font-black text-white">{comments.length}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-rose-900/40 border-2 border-rose-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span className="text-xl">❤️</span>
+                      </div>
+                      <div>
+                        <p className="text-sm text-slate-400 font-medium">Reactions</p>
+                        <p className="text-2xl font-black text-white">{reactions.length}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     );
   } catch (error) {
     console.error("💥 [UNLOCKED] Error:", error);
     return (
-      <div className="text-center py-10">
-        <h2 className="text-xl font-bold text-red-600">Error loading capsule</h2>
-        <p className="text-gray-600 mt-2">
-          {error instanceof Error ? error.message : 'Unknown error'}
-        </p>
-        <p className="text-sm text-gray-500 mt-2">ID: {(await params).id}</p>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-800 font-semibold mb-6 group transition-colors"
-        >
-          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Dashboard
-        </Link>
-
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-20 h-20 bg-red-900/40 border-2 border-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-black text-white mb-2">Error Loading Capsule</h2>
+          <p className="text-slate-400 mb-8">
+            {error instanceof Error ? error.message : 'Unknown error'}
+          </p>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-cyan-500 text-slate-900 rounded-lg hover:bg-cyan-400 font-bold transition-all duration-200 shadow-lg hover:shadow-cyan-500/50 hover:scale-105 active:scale-95"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Dashboard
+          </Link>
+        </div>
       </div>
     );
   }

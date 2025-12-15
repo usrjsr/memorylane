@@ -46,8 +46,8 @@ export default function RecipientInput({ recipients, setRecipients }: RecipientI
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
+    <div className="space-y-4">
+      <div className="flex gap-3">
         <Input
           type="email"
           placeholder="Enter recipient's email..."
@@ -57,35 +57,35 @@ export default function RecipientInput({ recipients, setRecipients }: RecipientI
             setError("");
           }}
           onKeyDown={handleKeyDown}
-          className="flex-1 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+          className="flex-1 border-2 border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
         />
         <Button
           type="button"
           onClick={addRecipient}
           variant="outline"
-          className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
+          className="border-2 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white px-4 font-semibold"
         >
           <UserPlus className="h-4 w-4 mr-2" />
           Add
         </Button>
       </div>
 
-      {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
+      {error && <p className="text-red-400 text-sm font-semibold">{error}</p>}
 
       {recipients.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="flex flex-wrap gap-3 mt-4">
           {recipients.map((recipientEmail) => (
             <div
               key={recipientEmail}
-              className="flex items-center gap-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm border border-amber-200"
+              className="flex items-center gap-2 bg-cyan-900/40 text-cyan-300 px-4 py-2 rounded-lg text-sm font-semibold shadow-md border-2 border-cyan-500/50 hover:border-cyan-400 transition-all"
             >
-              <span>{recipientEmail}</span>
+              <span className="truncate">{recipientEmail}</span>
               <button
                 type="button"
                 onClick={() => removeRecipient(recipientEmail)}
-                className="hover:bg-amber-200 rounded-full p-0.5 transition-colors"
+                className="hover:bg-cyan-800/40 rounded-md p-1 transition-colors flex-shrink-0"
               >
-                <X className="h-3 w-3" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           ))}

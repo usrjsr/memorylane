@@ -218,10 +218,10 @@ export default function CreateCapsulePage() {
   ];
 
   return (
-    <div className="min-h-screen py-10 px-4">
+    <div className="min-h-screen bg-slate-950 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10 space-y-4">
-          <div className="w-20 h-20 bg-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+          <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto shadow-2xl shadow-cyan-500/50">
             <svg
               className="w-12 h-12 text-white"
               fill="none"
@@ -231,15 +231,15 @@ export default function CreateCapsulePage() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 d="M12 4v16m8-8H4"
               />
             </svg>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-amber-900">
+          <h1 className="text-4xl sm:text-5xl font-black text-white">
             Create a Time Capsule
           </h1>
-          <p className="text-amber-700 text-lg">
+          <p className="text-slate-400 text-lg">
             Preserve precious memories for the future
           </p>
         </div>
@@ -255,38 +255,38 @@ export default function CreateCapsulePage() {
                 onClick={() => step >= s.step && setStep(s.step)}
               >
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold transition-all shadow-md ${
+                  className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-black transition-all shadow-md ${
                     step === s.step
-                      ? "bg-amber-600 text-white shadow-lg scale-110"
+                      ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/50 scale-110"
                       : step > s.step
-                      ? "bg-green-500 text-white"
-                      : "bg-amber-100 text-amber-400 border-2 border-amber-200"
+                      ? "bg-emerald-500 text-white"
+                      : "bg-slate-800 text-slate-400 border-2 border-slate-700"
                   }`}
                 >
                   {step > s.step ? "✓" : s.icon}
                 </div>
-                <p className="text-xs sm:text-sm mt-2 font-medium text-amber-900">
+                <p className="text-xs sm:text-sm mt-2 font-bold text-slate-300">
                   {s.label}
                 </p>
               </div>
             ))}
           </div>
-          <div className="h-2 bg-amber-100 rounded-full overflow-hidden border border-amber-200">
+          <div className="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
             <div
-              className="h-full bg-amber-600 transition-all duration-500 shadow-sm"
+              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500 shadow-lg shadow-cyan-500/50"
               style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10 border-2 border-amber-200">
-          <div onSubmit={handleSubmit}>
+        <div className="bg-slate-900 rounded-2xl shadow-2xl p-8 sm:p-10 border-2 border-cyan-500/30">
+          <form onSubmit={handleSubmit}>
             {step === 1 && (
               <div className="space-y-6 animate-in fade-in duration-500">
                 <div className="space-y-2">
                   <Label
                     htmlFor="title"
-                    className="text-amber-900 font-semibold"
+                    className="text-white font-bold text-lg"
                   >
                     Capsule Title *
                   </Label>
@@ -298,14 +298,14 @@ export default function CreateCapsulePage() {
                       setFormData({ ...formData, title: e.target.value })
                     }
                     required
-                    className="border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600 text-base"
+                    className="border-2 border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:border-cyan-500 focus:ring-cyan-500 text-base"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label
                     htmlFor="theme"
-                    className="text-amber-900 font-semibold"
+                    className="text-white font-bold text-lg"
                   >
                     Theme
                   </Label>
@@ -319,7 +319,7 @@ export default function CreateCapsulePage() {
                       }));
                       setAiMemoryIdeas([]);
                     }}
-                    className="w-full p-3 border-2 border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 text-amber-900 font-medium bg-white"
+                    className="w-full p-3 border-2 border-slate-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white bg-slate-800 font-medium"
                   >
                     <option value="Childhood">Childhood</option>
                     <option value="Family History">Family History</option>
@@ -335,7 +335,7 @@ export default function CreateCapsulePage() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="privacy"
-                    className="text-amber-900 font-semibold"
+                    className="text-white font-bold text-lg"
                   >
                     Privacy Level
                   </Label>
@@ -351,13 +351,13 @@ export default function CreateCapsulePage() {
                           | "public",
                       })
                     }
-                    className="w-full p-3 border-2 border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-600 focus:border-amber-600 text-amber-900 font-medium bg-white"
+                    className="w-full p-3 border-2 border-slate-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-white bg-slate-800 font-medium"
                   >
                     <option value="private">Private (Only you)</option>
                     <option value="recipients-only">Recipients Only</option>
                     <option value="public">Public</option>
                   </select>
-                  <p className="text-xs text-amber-700 mt-2">
+                  <p className="text-xs text-slate-400 mt-2">
                     {formData.privacy === "private" &&
                       "Only you can view this capsule."}
                     {formData.privacy === "recipients-only" &&
@@ -371,7 +371,7 @@ export default function CreateCapsulePage() {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="description"
-                      className="text-amber-900 font-semibold"
+                      className="text-white font-bold text-lg"
                     >
                       The Story / Description
                     </Label>
@@ -400,17 +400,17 @@ export default function CreateCapsulePage() {
                       setFormData({ ...formData, description: e.target.value })
                     }
                     rows={5}
-                    className="resize-none border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                    className="resize-none border-2 border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
                   />
                 </div>
 
-                <div className="bg-amber-50 p-5 rounded-2xl border-2 border-amber-200">
+                <div className="bg-cyan-900/20 p-6 rounded-2xl border-2 border-cyan-500/40">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="text-sm font-bold text-amber-900">
+                      <p className="text-sm font-bold text-cyan-300">
                         💡 Need inspiration?
                       </p>
-                      <p className="text-xs text-amber-700">
+                      <p className="text-xs text-cyan-400">
                         Get AI-powered memory ideas for your "{formData.theme}"
                         capsule
                       </p>
@@ -421,7 +421,7 @@ export default function CreateCapsulePage() {
                       size="sm"
                       onClick={fetchMemoryIdeas}
                       disabled={isLoadingIdeas}
-                      className="gap-2 bg-white hover:bg-amber-100 border-2 border-amber-300 text-amber-800"
+                      className="gap-2 bg-slate-800 hover:bg-slate-700 border-2 border-cyan-500/50 text-cyan-300"
                     >
                       {isLoadingIdeas ? (
                         <>
@@ -435,9 +435,9 @@ export default function CreateCapsulePage() {
                   </div>
 
                   {aiMemoryIdeas.length > 0 && (
-                    <div className="mt-4 bg-white p-5 rounded-xl border-2 border-amber-200 shadow-sm">
+                    <div className="mt-4 bg-slate-800/50 p-5 rounded-xl border-2 border-slate-700/50 shadow-sm">
                       <div className="flex items-center justify-between mb-3">
-                        <p className="font-bold text-sm text-amber-900">
+                        <p className="font-bold text-sm text-cyan-300">
                           📝 Click any idea to add it to your description:
                         </p>
                         <Button
@@ -445,7 +445,7 @@ export default function CreateCapsulePage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setAiMemoryIdeas([])}
-                          className="text-amber-400 hover:text-amber-600 h-6 w-6 p-0"
+                          className="text-slate-400 hover:text-white h-6 w-6 p-0"
                         >
                           <X size={16} />
                         </Button>
@@ -456,14 +456,14 @@ export default function CreateCapsulePage() {
                           <div
                             key={index}
                             onClick={() => addIdeaToDescription(idea)}
-                            className="group p-4 text-sm text-amber-800 bg-amber-50 rounded-xl cursor-pointer hover:bg-amber-100 transition-all duration-200 border-2 border-transparent hover:border-amber-300 hover:shadow-md"
+                            className="group p-4 text-sm text-slate-300 bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-700 transition-all duration-200 border-2 border-transparent hover:border-cyan-500/50 hover:shadow-md"
                           >
                             <div className="flex items-start gap-3">
                               <span className="text-xl group-hover:scale-110 transition-transform duration-200">
                                 💭
                               </span>
                               <span className="flex-1 font-medium">{idea}</span>
-                              <span className="text-xs text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
+                              <span className="text-xs text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
                                 Click to add →
                               </span>
                             </div>
@@ -471,14 +471,14 @@ export default function CreateCapsulePage() {
                         ))}
                       </div>
 
-                      <div className="mt-4 pt-4 border-t-2 border-amber-100">
+                      <div className="mt-4 pt-4 border-t-2 border-slate-700">
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
                           onClick={fetchMemoryIdeas}
                           disabled={isLoadingIdeas}
-                          className="text-amber-600 hover:text-amber-800 text-xs font-semibold"
+                          className="text-cyan-400 hover:text-cyan-300 text-xs font-semibold"
                         >
                           🔄 Generate new ideas
                         </Button>
@@ -489,7 +489,7 @@ export default function CreateCapsulePage() {
 
                 <Button
                   type="button"
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white shadow-lg h-12 text-base font-semibold"
+                  className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-lg hover:shadow-cyan-500/50 h-12 sm:h-14 text-sm sm:text-base font-bold"
                   onClick={() => setStep(2)}
                 >
                   Next Step →
@@ -500,26 +500,26 @@ export default function CreateCapsulePage() {
             {step === 2 && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
-                  <Label className="text-xl font-bold mb-4 block text-amber-900">
+                  <Label className="text-xl font-black mb-4 block text-white">
                     Upload Media (Photos, Videos, Audio)
                   </Label>
-                  <p className="text-sm text-amber-700 mb-4">
+                  <p className="text-sm text-slate-400 mb-4">
                     Add up to 10 images, 5 videos, or 10 audio files
                   </p>
 
-                  <div className="border-2 border-dashed border-amber-300 rounded-2xl p-10 bg-amber-50 hover:bg-amber-100 transition-colors">
+                  <div className="border-2 border-dashed border-cyan-500/50 rounded-2xl p-10 bg-slate-800/50 hover:bg-slate-800 transition-colors">
                     <Input
                       type="file"
                       multiple
                       accept="image/*,video/*,audio/*"
                       onChange={handleFileChange}
                       disabled={isUploading}
-                      className="block w-full text-sm text-amber-700 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 file:shadow-md cursor-pointer"
+                      className="block w-full text-sm text-slate-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-slate-900 hover:file:bg-cyan-400 file:shadow-md cursor-pointer"
                     />
                     {isUploading && (
                       <div className="flex items-center gap-2 mt-3">
-                        <Loader2 className="h-5 w-5 animate-spin text-amber-600" />
-                        <p className="text-sm text-amber-600 font-medium">
+                        <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+                        <p className="text-sm text-cyan-400 font-medium">
                           Uploading...
                         </p>
                       </div>
@@ -532,11 +532,11 @@ export default function CreateCapsulePage() {
                     {formData.mediaFiles.map((file, i) => (
                       <div
                         key={i}
-                        className="flex items-center justify-between p-4 bg-amber-50 rounded-xl border-2 border-amber-200 hover:border-amber-300 transition-colors"
+                        className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border-2 border-slate-700/50 hover:border-cyan-500/30 transition-colors"
                       >
                         <div className="flex-1">
-                          <span className="text-sm font-bold text-amber-900">
-                            <span className="inline-block px-2 py-1 bg-amber-600 text-white text-xs rounded-md mr-2">
+                          <span className="text-sm font-bold text-white">
+                            <span className="inline-block px-2 py-1 bg-cyan-500 text-slate-900 text-xs rounded-md mr-2 font-black">
                               {file.type.toUpperCase()}
                             </span>
                             {file.name}
@@ -556,7 +556,7 @@ export default function CreateCapsulePage() {
                                 }));
                               }}
                               rows={2}
-                              className="mt-2 text-xs border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                              className="mt-2 text-xs border-2 border-slate-700 bg-slate-700/50 text-slate-200 focus:border-cyan-500 focus:ring-cyan-500"
                               placeholder="Edit caption..."
                             />
                           ) : (
@@ -586,7 +586,7 @@ export default function CreateCapsulePage() {
                         <button
                           type="button"
                           onClick={() => removeMedia(i)}
-                          className="text-red-500 hover:text-red-700 ml-3 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                          className="text-red-500 hover:text-red-400 ml-3 p-2 hover:bg-red-900/30 rounded-lg transition-colors"
                         >
                           <X size={18} />
                         </button>
@@ -595,19 +595,19 @@ export default function CreateCapsulePage() {
                   </div>
                 )}
 
-                <div className="flex justify-between gap-4 pt-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-3 pt-6">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => setStep(1)}
-                    className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50 px-6"
+                    className="text-cyan-400 hover:text-cyan-300 font-bold h-12 sm:h-auto px-4 sm:px-6"
                   >
                     ← Back
                   </Button>
                   <Button
                     type="button"
                     onClick={() => setStep(3)}
-                    className="bg-amber-600 hover:bg-amber-700 text-white shadow-lg px-8"
+                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-lg hover:shadow-cyan-500/50 px-4 sm:px-8 font-bold h-12 sm:h-auto text-sm sm:text-base"
                   >
                     Next: Recipients →
                   </Button>
@@ -618,7 +618,7 @@ export default function CreateCapsulePage() {
             {step === 3 && (
               <div className="space-y-6 animate-fadeIn">
                 <div>
-                  <Label className="text-xl font-bold mb-3 block text-amber-900">
+                  <Label className="text-xl font-black mb-3 block text-white">
                     Unlock Date & Time *
                   </Label>
                   <div className="space-y-3">
@@ -637,12 +637,12 @@ export default function CreateCapsulePage() {
                           unlockDate: date,
                         }));
                       }}
-                      className="text-base p-4 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                      className="text-base p-4 border-2 border-slate-700 bg-slate-800 text-white focus:border-cyan-500 focus:ring-cyan-500"
                       required
                     />
                     <div className="flex gap-3">
                       <div className="flex-1">
-                        <Label className="text-sm text-amber-900 font-medium mb-1 block">
+                        <Label className="text-sm text-slate-300 font-medium mb-1 block">
                           Hour
                         </Label>
                         <Input
@@ -663,11 +663,11 @@ export default function CreateCapsulePage() {
                               unlockDate: date,
                             }));
                           }}
-                          className="text-base p-3 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                          className="text-base p-3 border-2 border-slate-700 bg-slate-800 text-white focus:border-cyan-500 focus:ring-cyan-500"
                         />
                       </div>
                       <div className="flex-1">
-                        <Label className="text-sm text-amber-900 font-medium mb-1 block">
+                        <Label className="text-sm text-slate-300 font-medium mb-1 block">
                           Minute
                         </Label>
                         <Input
@@ -688,12 +688,12 @@ export default function CreateCapsulePage() {
                               unlockDate: date,
                             }));
                           }}
-                          className="text-base p-3 border-2 border-amber-200 focus:border-amber-600 focus:ring-amber-600"
+                          className="text-base p-3 border-2 border-slate-700 bg-slate-800 text-white focus:border-cyan-500 focus:ring-cyan-500"
                         />
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-amber-700 mt-3 flex items-center gap-2">
+                  <p className="text-sm text-slate-400 mt-3 flex items-center gap-2">
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -703,7 +703,7 @@ export default function CreateCapsulePage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
@@ -714,10 +714,10 @@ export default function CreateCapsulePage() {
                 {formData.privacy !== "private" && (
                   <>
                     <div>
-                      <Label className="text-xl font-bold mb-3 block text-amber-900">
+                      <Label className="text-xl font-black mb-3 block text-white">
                         Recipients (Email Addresses) *
                       </Label>
-                      <p className="text-sm text-amber-700 mb-4">
+                      <p className="text-sm text-slate-400 mb-4">
                         Add email addresses of people who should receive this
                         capsule
                       </p>
@@ -726,21 +726,13 @@ export default function CreateCapsulePage() {
                         recipients={recipients}
                         setRecipients={setRecipients}
                       />
-
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="mt-4 w-full border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
-                      >
-                        + Add Another Recipient
-                      </Button>
                     </div>
 
                     <div>
-                      <Label className="text-xl font-bold mb-3 block text-amber-900">
+                      <Label className="text-xl font-black mb-3 block text-white">
                         Collaborators (Optional)
                       </Label>
-                      <p className="text-sm text-amber-700 mb-4">
+                      <p className="text-sm text-slate-400 mb-4">
                         Add email addresses of people who can contribute media
                         and messages to this capsule
                       </p>
@@ -749,21 +741,13 @@ export default function CreateCapsulePage() {
                         collaborators={collaborators}
                         setCollaborators={setCollaborators}
                       />
-
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="mt-4 w-full border-2 border-blue-300 text-blue-800 hover:bg-blue-50"
-                      >
-                        + Add Another Collaborator
-                      </Button>
                     </div>
                   </>
                 )}
 
                 {formData.privacy === "private" && (
-                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-                    <p className="text-sm text-blue-800 font-semibold flex items-center gap-2">
+                  <div className="bg-indigo-900/20 border-2 border-indigo-500/40 rounded-xl p-4">
+                    <p className="text-sm text-indigo-300 font-semibold flex items-center gap-2">
                       <span>ℹ️</span>
                       This is a private capsule. Recipients and collaborators
                       are not needed.
@@ -771,19 +755,19 @@ export default function CreateCapsulePage() {
                   </div>
                 )}
 
-                <div className="flex justify-between gap-4 pt-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-3 pt-6">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => setStep(2)}
-                    className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50 px-6"
+                    className="text-cyan-400 hover:text-cyan-300 font-bold h-12 sm:h-auto px-4 sm:px-6"
                   >
                     ← Back
                   </Button>
                   <Button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="bg-amber-600 hover:bg-amber-700 text-white shadow-lg px-8"
+                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 shadow-lg hover:shadow-cyan-500/50 px-4 sm:px-8 font-bold h-12 sm:h-auto text-sm sm:text-base"
                   >
                     Next: Review →
                   </Button>
@@ -793,86 +777,86 @@ export default function CreateCapsulePage() {
 
             {step === 4 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="bg-amber-50 p-6 rounded-2xl border-2 border-amber-200">
-                  <p className="font-bold mb-4 text-xl text-amber-900 flex items-center gap-2">
+                <div className="bg-cyan-900/20 p-6 rounded-2xl border-2 border-cyan-500/40">
+                  <p className="font-black mb-4 text-xl text-cyan-300 flex items-center gap-2">
                     📋 Capsule Summary
                   </p>
                   <ul className="space-y-3 text-sm">
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">📝</span>
                       <div>
-                        <strong className="text-amber-900">Title:</strong>
-                        <p className="text-amber-700">
+                        <strong className="text-white">Title:</strong>
+                        <p className="text-slate-400">
                           {formData.title || "Not set"}
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">📖</span>
                       <div>
-                        <strong className="text-amber-900">Description:</strong>
-                        <p className="text-amber-700">
+                        <strong className="text-white">Description:</strong>
+                        <p className="text-slate-400">
                           {formData.description
                             ? `${formData.description.substring(0, 100)}...`
                             : "Not set"}
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">🖼️</span>
                       <div>
-                        <strong className="text-amber-900">Media:</strong>
-                        <p className="text-amber-700">
+                        <strong className="text-white">Media:</strong>
+                        <p className="text-slate-400">
                           {formData.mediaFiles.length} files
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">👥</span>
                       <div>
-                        <strong className="text-amber-900">Recipients:</strong>
-                        <p className="text-amber-700">
+                        <strong className="text-white">Recipients:</strong>
+                        <p className="text-slate-400">
                           {recipients.filter((r) => r.trim()).join(", ") ||
                             "None"}
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">🤝</span>
                       <div>
-                        <strong className="text-amber-900">
+                        <strong className="text-white">
                           Collaborators:
                         </strong>
-                        <p className="text-amber-700">
+                        <p className="text-slate-400">
                           {collaborators.filter((c) => c.trim()).join(", ") ||
                             "None"}
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">📅</span>
                       <div>
-                        <strong className="text-amber-900">
+                        <strong className="text-white">
                           Unlock Date & Time:
                         </strong>
-                        <p className="text-amber-700">
+                        <p className="text-slate-400">
                           {format(formData.unlockDate, "PPP")} at{" "}
                           {formData.unlockHour}:{formData.unlockMinute}
                         </p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">🎨</span>
                       <div>
-                        <strong className="text-amber-900">Theme:</strong>
-                        <p className="text-amber-700">{formData.theme}</p>
+                        <strong className="text-white">Theme:</strong>
+                        <p className="text-slate-400">{formData.theme}</p>
                       </div>
                     </li>
-                    <li className="flex items-start gap-3 p-3 bg-white rounded-lg">
+                    <li className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-xl">🔒</span>
                       <div>
-                        <strong className="text-amber-900">Privacy:</strong>
-                        <p className="text-amber-700">
+                        <strong className="text-white">Privacy:</strong>
+                        <p className="text-slate-400">
                           {formData.privacy === "private" &&
                             "Private (Only you)"}
                           {formData.privacy === "recipients-only" &&
@@ -884,19 +868,19 @@ export default function CreateCapsulePage() {
                   </ul>
                 </div>
 
-                <div className="flex justify-between gap-4 pt-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-3 pt-6">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={() => setStep(3)}
-                    className="border-2 border-amber-300 text-amber-800 hover:bg-amber-50 px-6"
+                    className="text-cyan-400 hover:text-cyan-300 font-bold h-12 sm:h-auto px-4 sm:px-6"
                   >
                     ← Back
                   </Button>
                   <Button
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={isSubmitting}
-                    className="bg-green-600 hover:bg-green-700 text-white shadow-lg px-8 font-bold"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg hover:shadow-emerald-500/50 px-4 sm:px-8 font-bold h-12 sm:h-auto text-sm sm:text-base"
                   >
                     {isSubmitting ? (
                       <>
@@ -910,10 +894,10 @@ export default function CreateCapsulePage() {
                 </div>
               </div>
             )}
-          </div>
+          </form>
         </div>
 
-        <div className="text-center mt-8 text-sm text-amber-700 font-medium">
+        <div className="text-center mt-8 text-sm text-slate-400 font-medium">
           <p>Step {step} of 4</p>
         </div>
       </div>

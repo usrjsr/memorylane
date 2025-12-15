@@ -12,12 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-slate-950`}>
         <Providers>
-          <div className="flex flex-col min-h-screen bg-amber-50">
+          <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="grow w-full">
               {children}
             </main>
             <Footer />

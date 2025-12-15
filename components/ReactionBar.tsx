@@ -71,21 +71,42 @@ export default function ReactionBar({
   const hasReacted = (emoji: string) =>
     reactions.some((r) => r.emoji === emoji && r.userId === userId);
 
+  const emojiColors: Record<string, { bg: string; border: string; active: string }> = {
+    "❤️": { bg: "bg-rose-900/20", border: "border-rose-500/30", active: "bg-rose-600 hover:bg-rose-500 text-white border-rose-500" },
+    "✨": { bg: "bg-amber-900/20", border: "border-amber-500/30", active: "bg-amber-500 hover:bg-amber-400 text-slate-900 border-amber-500" },
+    "😢": { bg: "bg-slate-800/30", border: "border-slate-600/30", active: "bg-slate-600 hover:bg-slate-500 text-white border-slate-600" },
+    "🙏": { bg: "bg-purple-900/20", border: "border-purple-500/30", active: "bg-purple-600 hover:bg-purple-500 text-white border-purple-500" },
+    "🎉": { bg: "bg-cyan-900/20", border: "border-cyan-500/30", active: "bg-cyan-500 hover:bg-cyan-400 text-slate-900 border-cyan-500" },
+  };
+
   return (
     <div className="flex flex-wrap gap-3">
-      {EMOJIS.map((emoji) => (
-        <Button
-          key={emoji}
-          variant={hasReacted(emoji) ? "default" : "outline"}
-          onClick={() => handleReact(emoji)}
-          disabled={!!loading}
-          className={`rounded-full px-4 py-2 flex items-center gap-2 transition-all hover:scale-110 shadow-md ${hasReacted(emoji) ? "bg-amber-600 text-white hover:bg-amber-700" : "border-2 border-amber-300 text-amber-800 hover:bg-amber-50"
+      {EMOJIS.map((emoji) => {
+        const colors = emojiColors[emoji];
+        const count = getCount(emoji);
+        const isReacted = hasReacted(emoji);
+
+        return (
+          <Button
+            key={emoji}
+            onClick={() => handleReact(emoji)}
+            disabled={!!loading}
+            className={`rounded-full px-4 py-3 sm:px-6 sm:py-3 flex items-center gap-2 transition-all transform hover:scale-110 active:scale-95 font-semibold border-2 shadow-md ${
+              isReacted
+                ? `${colors.active}`
+                : `${colors.bg} ${colors.border} text-slate-300 hover:${colors.bg.replace('/20', '/40')} hover:border-opacity-60`
             }`}
-        >
-          <span className="text-lg">{emoji}</span>
-          <span className="text-xs font-bold">{getCount(emoji)}</span>
-        </Button>
-      ))}
+            variant={isReacted ? "default" : "outline"}
+          >
+            <span className="text-xl sm:text-2xl">{emoji}</span>
+            {count > 0 && (
+              <span className={`text-xs sm:text-sm font-black ${isReacted ? 'text-current' : 'text-slate-400'}`}>
+                {count}
+              </span>
+            )}
+          </Button>
+        );
+      })}
     </div>
   );
 }

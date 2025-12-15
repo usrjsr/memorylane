@@ -62,52 +62,66 @@ export default function CollaboratorModal({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="gap-2 border-2 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white font-semibold">
           <Users className="h-4 w-4" />
           Manage Contributors
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-slate-900 border-2 border-cyan-500/30">
         <DialogHeader>
-          <DialogTitle>Collaborators</DialogTitle>
+          <DialogTitle className="text-white text-xl font-black">Manage Collaborators</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600">
+        <div className="space-y-5">
+          <p className="text-sm text-slate-400">
             Invite registered users to add their own media and messages to this capsule.
           </p>
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Input
               type="email"
               placeholder="collaborator@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
+              className="border-2 border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
             />
-            <Button onClick={handleInvite} disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Invite"}
+            <Button 
+              onClick={handleInvite} 
+              disabled={loading}
+              className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-4 whitespace-nowrap"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                <>
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Invite
+                </>
+              )}
             </Button>
           </div>
 
-          <div className="mt-4 border-t pt-4">
-            <p className="text-sm font-medium mb-2">Current Team:</p>
-            <div className="space-y-2">
+          <div className="border-t-2 border-slate-700 pt-5">
+            <p className="text-sm font-bold text-white mb-4">Current Team:</p>
+            <div className="space-y-3 max-h-64 overflow-y-auto">
               {initialCollaborators.map((collab, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg text-sm"
+                  className="flex items-center justify-between bg-slate-800/50 border-2 border-purple-500/30 px-4 py-3 rounded-lg hover:border-purple-400 transition-all"
                 >
-                  <span>{collab.name || collab.email}</span>
-                  <span className="text-xs text-gray-500">
-                    {collab.email}
+                  <div>
+                    <p className="text-sm font-semibold text-white">{collab.name || "Unknown"}</p>
+                    <p className="text-xs text-slate-400">{collab.email}</p>
+                  </div>
+                  <span className="text-xs font-bold text-purple-400 bg-purple-900/40 px-2 py-1 rounded">
+                    Contributor
                   </span>
                 </div>
               ))}
               {initialCollaborators.length === 0 && (
-                <p className="text-gray-400 text-sm italic">
-                  Only you are contributing.
-                </p>
+                <div className="text-center py-6 text-slate-400 italic">
+                  <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Only you are contributing.</p>
+                </div>
               )}
             </div>
           </div>
