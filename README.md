@@ -275,7 +275,7 @@ memorylane/
 | `POST` | `/api/capsules/comment` | Post a comment | ✅ |
 
 ### AI Features
-
+ `Removed due To API getting exhaust`
 | Method | Endpoint | Action | Description |
 |--------|----------|--------|-------------|
 | `POST` | `/api/capsules/ai` | `generateCaption` | Create media captions (<100 chars) |
