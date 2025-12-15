@@ -285,8 +285,8 @@ memorylane/
 
 ### Automation
 
-| Method | Endpoint | Description | Trigger |
-|--------|----------|-------------|---------|
+| Method | Endpoint | Description | 
+|--------|----------|-------------|
 | `GET` | `/api/capsule/[id]/unlock` | Auto-unlock due capsules | 
 
 ---
