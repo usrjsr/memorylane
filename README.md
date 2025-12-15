@@ -287,7 +287,7 @@ memorylane/
 
 | Method | Endpoint | Description | Trigger |
 |--------|----------|-------------|---------|
-| `GET` | `/api/cron/unlock` | Auto-unlock due capsules | Hourly cron job |
+| `GET` | `/api/capsule/[id]/unlock` | Auto-unlock due capsules | 
 
 ---
 
