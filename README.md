@@ -329,23 +329,6 @@ memorylane/
 3. Add environment variables
 4. Deploy with one click!
 
-### Configure Cron Jobs
-
-Add to `vercel.json`:
-
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/unlock",
-      "schedule": "0 * * * *"
-    }
-  ]
-}
-```
-
-This unlocks capsules hourly when their unlock date arrives.
-
 ---
 
 ## 🤝 Contributing
