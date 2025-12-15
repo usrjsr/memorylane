@@ -13,7 +13,12 @@ export async function POST(
 
     await dbConnect();
 
-    const capsule = await Capsule.findById(id);
+    
+    const capsule = await Capsule.findById(id).populate(
+      "collaborators",
+      "email name"
+    );
+
     if (!capsule) {
       return NextResponse.json({ error: "Capsule not found" }, { status: 404 });
     }
@@ -23,47 +28,51 @@ export async function POST(
       await capsule.save();
     }
 
-    const owner = await User.findById(capsule.ownerId);
+    const owner = await User.findById(capsule.ownerId).lean();
     const senderName = owner?.name || "Someone special";
     const ownerEmail = owner?.email;
 
-    // Send to owner + recipients (collaboratorEmails doesn't exist in model)
     const recipientEmails = Array.isArray(capsule.recipientEmails)
       ? capsule.recipientEmails
       : [];
+
+    const collaboratorEmails = Array.isArray(capsule.collaborators)
+      ? capsule.collaborators
+          .map((u: any) => u?.email)
+          .filter((e: any) => typeof e === "string" && e.length > 0)
+      : [];
+
     const allEmails = [
-      ...new Set([ownerEmail, ...recipientEmails].filter(Boolean)),
+      ...new Set(
+        [ownerEmail, ...recipientEmails, ...collaboratorEmails].filter(Boolean)
+      ),
     ];
 
-    const emailPromises = allEmails.map((email: string) =>
-      sendUnlockNotification({
-        recipientEmail: email,
-        capsuleTitle: capsule.title,
-        capsuleId: capsule._id.toString(),
-        senderName,
-      })
+    const results = await Promise.all(
+      allEmails.map((email) =>
+        sendUnlockNotification({
+          recipientEmail: email,
+          capsuleTitle: capsule.title,
+          capsuleId: capsule._id.toString(),
+          senderName,
+        })
+      )
     );
 
-    const results = await Promise.all(emailPromises);
     const successCount = results.filter((r) => r.success).length;
-    const failedEmails = results.filter((r) => !r.success);
+    const failed = results.filter((r) => !r.success);
 
-    if (failedEmails.length > 0) {
+    if (failed.length) {
       console.error(
-        `⚠️ [API] ${failedEmails.length}/${results.length} emails failed to send`
+        `⚠️ [API] ${failed.length}/${results.length} emails failed`
       );
     }
-
-    console.log(
-      `✅ [API] Capsule ${id} unlocked and ${successCount}/${
-        allEmails.length
-      } emails sent to: ${allEmails.join(", ")}`
-    );
 
     return NextResponse.json({
       success: true,
       message: "Capsule unlocked and emails sent",
       emailsSent: successCount,
+      recipients: allEmails,
     });
   } catch (error) {
     console.error("❌ [API] Error unlocking capsule:", error);
