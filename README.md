@@ -4,13 +4,11 @@
 
 🎥 **Live Demo**
 
-<video src="public/memorylane-demo.mp4" controls autoplay muted loop width="90%">
-Your browser does not support the video tag.
-</video>
+[![MemoryLane Demo](https://img.youtube.com/vi/OfuEw5CVqmw/maxresdefault.jpg)](https://youtu.be/OfuEw5CVqmw)
 
-<br/>
+📽️ *Click to watch the full 6-minute walkthrough — capsule creation, media uploads, AI-powered features, collaboration, and unlocking experience.*
 
-📽️ *A complete walkthrough of MemoryLane — capsule creation, media uploads, AI-powered features, collaboration, and unlocking experience.*
+[🎬 Watch on YouTube](https://youtu.be/OfuEw5CVqmw)
 
 ---
 
@@ -86,10 +84,6 @@ Create, collaborate, and relive cherished moments with photos, videos, audio, an
 ### Capsule Creation Wizard
 
 Navigate through a seamless 4-step process:
-
-
-
-
 
 ---
 
