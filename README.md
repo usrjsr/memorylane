@@ -147,3 +147,213 @@ cd memorylane
 npm install
 cp .env.example .env.local
 npm run dev
+
+# Open your browser
+# Navigate to http://localhost:3000
+```
+
+---
+
+## 🔑 Environment Configuration
+
+Create a `.env.local` file with the following variables:
+
+```env
+# Database
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/memorylane
+
+# Authentication
+NEXTAUTH_SECRET=your-super-secret-key-min-32-characters
+NEXTAUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# File Uploads
+UPLOADTHING_SECRET=sk_live_xxxxx
+UPLOADTHING_APP_ID=your-app-id
+
+# AI Features
+GEMINI_API_KEY=your-gemini-api-key
+
+# Email Notifications
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+EMAIL_FROM=MemoryLane <noreply@memorylane.com>
+
+# Cron Jobs (Optional)
+CRON_SECRET=your-cron-secret-for-scheduled-jobs
+```
+
+> **📌 Note:** For Gmail SMTP, you'll need to generate an [App Password](https://support.google.com/accounts/answer/185833)
+
+---
+
+## 📂 Project Structure
+
+```
+memorylane/
+├── 📁 app/
+│   ├── 🔒 (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── 🌐 api/
+│   │   ├── auth/
+│   │   ├── capsules/
+│   │   ├── cron/unlock/
+│   │   └── uploadthing/
+│   ├── 📦 capsule/[id]/upload/
+│   ├── ➕ create/capsule/
+│   ├── 📊 dashboard/
+│   │   ├── capsules/
+│   │   └── collections/
+│   ├── 🔓 unlocked/[id]/
+│   └── 🏠 page.tsx
+├── 🧩 components/
+│   ├── ui/                    # shadcn components
+│   ├── AiAssistant.tsx
+│   ├── CapsuleCard.tsx
+│   ├── CountdownTimer.tsx
+│   ├── ReactionBar.tsx
+│   └── CommentSection.tsx
+├── 📚 lib/
+│   ├── ai.ts                  # Gemini integration
+│   ├── auth.ts                # NextAuth config
+│   ├── db.ts                  # MongoDB connection
+│   ├── email.ts               # Nodemailer utilities
+│   └── uploadthing.ts
+├── 🗃️ models/
+│   ├── Capsule.ts
+│   ├── User.ts
+│   ├── Media.ts
+│   ├── Reaction.ts
+│   └── Comment.ts
+└── 📄 package.json
+```
+
+---
+
+## 📡 API Reference
+
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/register` | Create new user account |
+| `*` | `/api/auth/[...nextauth]` | NextAuth.js handler (login/callback) |
+
+### Capsule Management
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `POST` | `/api/capsules/create` | Create new time capsule | ✅ |
+| `POST` | `/api/capsules/uploadmedia` | Add media to capsule | ✅ |
+| `POST` | `/api/capsules/[id]/unlock` | Manually unlock capsule | ✅ (Owner) |
+| `POST` | `/api/capsules/collaborate` | Add collaborator | ✅ (Owner) |
+| `POST` | `/api/capsules/react` | Add/toggle emoji reaction | ✅ |
+| `POST` | `/api/capsules/comment` | Post a comment | ✅ |
+
+### AI Features
+ `Removed due To API getting exhaust`
+| Method | Endpoint | Action | Description |
+|--------|----------|--------|-------------|
+| `POST` | `/api/capsules/ai` | `generateCaption` | Create media captions (<100 chars) |
+| `POST` | `/api/capsules/ai` | `summarize` | Condense text (<30 words) |
+| `POST` | `/api/capsules/ai` | `enhance` | Rewrite vividly (<120 words) |
+| `POST` | `/api/capsules/ai` | `suggest` | Generate 5 memory ideas |
+
+### Automation
+
+| Method | Endpoint | Description | 
+|--------|----------|-------------|
+| `GET` | `/api/capsule/[id]/unlock` | Auto-unlock due capsules | 
+
+---
+
+## 🗄️ Database Schema
+
+### Capsule Model
+
+```typescript
+{
+  title: string
+  description?: string
+  ownerId: ObjectId → User
+  collaborators: ObjectId[] → User
+  recipientEmails: string[]
+  unlockDate: Date
+  status: 'locked' | 'unlocked'
+  theme: 'Childhood' | 'Family History' | 'College Years' | 'Wedding' | 
+         'Travel Adventures' | 'Career Milestones' | 'Friendship' | 'Other'
+  privacy: 'private' | 'public' | 'recipients-only'
+  mediaIds: ObjectId[] → Media
+  timestamps: { createdAt, updatedAt }
+}
+```
+
+### Additional Models
+
+**User** • **Media** • **Reaction** • **Comment**
+
+> Full schema documentation available in `/models` directory
+
+---
+
+## 🚢 Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import project in [Vercel](https://vercel.com)
+3. Add environment variables
+4. Deploy with one click!
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow existing code style
+- Write meaningful commit messages
+- Test thoroughly before submitting
+- Update documentation as needed
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+Special thanks to these amazing projects:
+
+- [Next.js](https://nextjs.org/) - The React Framework for Production
+- [shadcn/ui](https://ui.shadcn.com/) - Beautifully designed components
+- [UploadThing](https://uploadthing.com/) - Simple file uploads for Next.js
+- [Google Gemini](https://ai.google.dev/) - Powerful AI capabilities
+- [Radix UI](https://www.radix-ui.com/) - Unstyled, accessible components
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+---
+
+<div align="center">
+
+**Made with ❤️ for preserving memories**
+
+[⬆ Back to Top](#-memorylane)
+
+</div>
